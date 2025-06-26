@@ -28,5 +28,6 @@
     "bugs": {
         "url": "https://github.com/banuka20431/panhinda/issues"
     },
-    "homepage": "https://github.com/banuka20431/panhinda#readme"
+    "homepage": "https://github.com/banuka20431/panhinda#readme",
+    "type": "module"
 }
