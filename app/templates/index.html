@@ -1,0 +1,84 @@
+{# templates/index.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% include 'partials/navbar.html' %}
+{% include 'partials/flash_messages.html' %}
+{% include 'partials/search_bar.html' %}
+
+{% include 'partials/background_texture_2.html' %}
+
+<div class="text-center sm:text-8xl text-6xl font-caveat mt-7 text-shadow-neutral-500 text-shadow-sm">Welcome to
+    Panhinda</div>
+<p class="text-center sm:text-xl text-md font-signika mb-10 font-semibold">A Sri Lankan Community</p>
+
+{% if not current_user.is_authenticated %}
+
+<div class="flex justify-center">
+    <p
+        class="font-kanit text-md w-250 text-center rounded-xl px-10 py-5 bg-amber-200 opacity-65 inset-shadow-gray-200 shadow-2xl">
+        Panhinda is a platform where ideas, stories, and creativity come alive. Whether it’s your thoughts, vision,
+        knowledge, or sense of humor — we welcome it all.
+
+        Express yourself freely, without boundaries. From heartfelt experiences to bold opinions, from casual musings to
+        academic insights — Panhinda is your space to speak.
+
+        So go ahead — share your story with the world and become part of a growing community of voices that matter.
+</div>
+</div>
+
+<div class="flex justify-center mt-6 mb-5">
+    <a href="{{url_for('auth.register_user_details')}}">
+        <button class="bg-neutral-900 text-neutral-200 px-10 
+            py-5 rounded-md mt-10 shadow-neutral-500 
+            duration-300 ease-in-out shadow-2xl transition 
+            hover:scale-110 hover:duration-500 hover:ease-in-out 
+            cursor-pointer antialiased">Get
+            Started Now &nbsp;<i class="fa-solid fa-thumbs-up text-amber-50"></i></button>
+    </a>
+</div>
+
+{% else %}
+
+<div class="flex md:flex-row flex-col justify-self-center gap-5 m-5">
+
+    <div class="shadow-2xl rounded-xl p-6 flex-1  text-center hover:shadow-3xl hover:translate-y-2.5 transition"
+        id="read">
+        <a href="{{ url_for('articles.view_article', article_id=1) }}">
+           <i class="fa fa-book-open-reader fa-4x mb-4 text-yellow-600"></i>
+            <h2 class="font-caveat  text-2xl font-semibold mb-2">Read</h2>
+            <div class="text-neutral-400 font-semibold">
+                Let Us Suggest to You
+            </div>
+        </a>
+    </div>
+
+    <div class="shadow-2xl rounded-xl p-6 flex-1  text-center hover:shadow-3xl hover:translate-y-2.5 transition"
+        id="read">
+        <a href="{{ url_for('articles.view_article', article_id=1) }}">
+           <i class="fa fa-search fa-4x mb-4 text-yellow-600 "></i>
+            <h2 class="font-caveat  text-2xl font-semibold mb-2">Explorer</h2>
+            <div class="text-neutral-400 font-semibold">
+                Search for Something Interesting
+            </div>
+        </a>
+    </div>
+
+    <div class="shadow-2xl rounded-xl p-6 flex-1  text-center hover:shadow-3xl hover:translate-y-2.5 transition"
+        id="read">
+        <a href="{{ url_for('articles.view_article', article_id=1) }}">
+           <i class="fa fa-book-open-reader fa-4x mb-4 text-yellow-600"></i>
+            <h2 class="font-caveat  text-2xl font-semibold mb-2">Write</h2>
+            <div class="text-neutral-400 font-semibold">
+                Create a New Post and Share
+            </div>
+        </a>
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

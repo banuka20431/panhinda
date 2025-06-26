@@ -1,0 +1,87 @@
+{# templates/auth/register/user-details.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% include 'partials/navbar.html' %}
+
+{% include 'partials/flash_messages.html' %}
+
+{% include 'partials/background_texture_1.html' %}
+
+<div class="flex flex-row justify-center gap-15 items-center h-[80%]">
+    <div>
+        <h3 class="font-merienda font-bold text-3xl w-xl">
+            Create your own account to get a better expirence
+        </h3>
+        <a href="{{url_for('auth.login')}}">
+            <button class="font-fira mt-2 ml-1 text-xs font-semibold border-2 px-1 py-1 opacity-50 hover:opacity-65 transition delay-100 cursor-pointer">
+                Already have an account 
+                <i class="fa fa-hand"></i>
+            </button></a>
+    </div>
+
+    <form action="/auth/register/user-details" method="post"
+        class="mt-10 px-6 py-4 rounded-xl shadow-xl bg-linear-to-br from-yellow-100 via-yellow-150 to-yellow-200 flex flex-col gap-3 w-[380px]">
+        {{form.hidden_tag()}}
+        <p class="flex flex-col gap-1">
+            {{form.first_name.label(class="text-sm")}}
+            {{form.first_name(class="w-full rounded-md bg-neutral-700 px-2 py-2 text-sm shadow-sm
+            text-neutral-50 font-semibold
+            placeholder-neutral-50
+            focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600")}}
+        </p>
+        <p class="flex flex-col gap-1">
+            {{form.last_name.label(class="text-sm")}}
+            {{form.last_name(class="w-full rounded-md bg-neutral-700 px-2 py-2 text-sm shadow-sm
+            text-neutral-50 font-semibold
+            placeholder-neutral-50
+            focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600")}}
+        </p>
+        <p class="flex flex-col gap-1">
+            {{form.dob.label(class="text-sm")}}
+            {{form.dob(class="w-full rounded-md bg-neutral-700 px-2 py-2 text-sm shadow-sm text-neutral-50
+            font-semibold
+            placeholder-neutral-50
+            focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600 uppercase")}}
+        </p>
+        <p class="flex flex-col gap-1">
+            {{ form.gender.label(class="text-sm") }}
+        <p class="flex flex-row gap-3">
+            {% for option in form.gender %}
+            <span class="flex flex-row gap-2">
+                {{option.label}}
+                {{option}}
+            </span>
+            {% endfor %}
+        </p>
+        </p>
+        <p class="flex flex-col gap-1">
+            {{form.email.label(class="text-sm")}}
+            {{form.email(class="w-full rounded-md bg-neutral-700 px-2 py-2 text-sm shadow-sm text-neutral-50
+            font-semibold
+            placeholder-neutral-50
+            focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600")}}
+        </p>
+        <p class="flex flex-col gap-1">
+            {{form.phone_number.label(class="text-sm")}}
+            {{form.phone_number(class="w-full rounded-md bg-neutral-700 px-2 py-2 text-sm shadow-sm
+            text-neutral-50 font-semibold
+            placeholder-neutral-50
+            focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600")}}
+        </p>
+        <p class="flex flex-row gap-2 mt-2">
+            {{form.submit(class="inline-flex items-center justify-center rounded-md bg-yellow-600 px-4 py-2 text-sm
+            font-medium
+            text-white
+            shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2
+            transition-colors duration-200 cursor-pointer")}}
+            <button type="reset" class="inline-flex items-center justify-center rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium
+            text-white
+            shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2
+            transition-colors duration-200 cursor-pointer">Clear</button>
+        </p>
+    </form>
+
+    {% endblock %}

@@ -1,0 +1,15 @@
+{# templates/auth/email_confirmed.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+    {% if confirmed %}
+        <h3>Your email has been successfully verified</h3>
+        <p>You can close this window now.</p>
+    {% else %}
+        <p>Sorry. we couldn't verify your email and your account cannot be created</p>
+        <p>You can try to <a href="{{ url_for('auth.register_user_details') }}">register</a> again.</p>
+    {% endif %}
+
+{% endblock %}

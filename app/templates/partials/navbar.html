@@ -1,0 +1,65 @@
+<div class="px-4 py-5 flex xs:gap-5 gap-3 items-center shadow-md">
+    <h1>
+        <a href="{{ url_for('index') }}" class="font-signika sm:text-3xl text-2xl">Panhinda</a>
+    </h1>
+
+    <nav class="flex gap-2 sm:gap-4 sm:px-3 items-center">
+        <a href="{{ url_for('index') }}"><span
+                class="pb-1.5 font-signika px-4 py-1.5 rounded hover:bg-neutral-700 hover:text-neutral-100 text-neutral-500 font-semibold transition-discrete transition-all duration-200">Home</span></a>
+        <a href="{{ url_for('articles.view_articles') }}"><span
+                class="pb-1.5 font-signika px-4 py-1.5 rounded hover:bg-neutral-700 hover:text-neutral-100 text-neutral-500 font-semibold transition-discrete transition-colors duration-200">Articles</span></a>
+        <a href="{{ url_for('articles.view_create_article') }}"><span
+                class="pb-1.5 hidden sm:block font-signika px-4 py-1.5 rounded hover:bg-neutral-700 hover:text-neutral-100 text-neutral-500 font-semibold transition-discrete transition-colors duration-200 ">Create</span></a>
+    </nav>
+
+    {% if current_user.is_anonymous %}
+
+    <div class="flex gap-3 flex-row ml-auto">
+        <a href="{{ url_for('auth.login') }}">
+            <button
+                class="cursor-pointer font-fira px-4 py-1.5 font-semibold rounded-md  text-sm {{ 'bg-neutral-800 text-neutral-100  border-neutral-950 border-2' if request.path != '/auth/register/user-details' else 'text-neutral-800 rounded-md border-neutral-950 border-2' }}">Login&nbsp;<i
+                    class="fa fa-user text-sm {{ 'text-green-600' if request.path != '/auth/register/user-details' else 'text-neutral-900' }}"></i></button>
+        </a>
+        <a href="{{ url_for('auth.register_user_details') }}">
+            <button
+                class="cursor-pointer hidden sm:block font-fira px-4 py-1.5 font-semibold rounded-md text-sm {{ 'bg-neutral-800 text-neutral-100 border-2 border-neutral-900' if request.path == '/auth/register/user-details' else 'text-neutral-800 rounded-md border-2 border-neutral-950' }}">Signup</button>
+        </a>
+    </div>
+
+    {% else %}
+
+    <div class="flex flex-row justify-evenly items-center gap-4 ml-auto mr-3">
+        <p class="text-neutral-700 font-noto text-xs md:block hidden">
+            Welcome, &nbsp;<a href="{{ url_for('profile.view_profile') }}"
+                class="underline underline-offset-2 text-neutral-950 text-sm">{{
+                current_user.first_name }}</a> !
+        </p>
+        <div class="relative group">
+            <a href="{{ url_for('profile.view_profile') }}">
+                <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                    class="w-10 h-10 object-cover rounded-3xl cursor-pointer border-neutral-900 border-3 shadow-xl">
+            </a>
+            <div
+                class="sm:flex hidden flex-col items-center gap-1 bg-linear-to-tr from-yellow-100 via-yellow-200 to-yellow-400 px-3 py-3 absolute bottom-[-190px] left-[-200px] shadow-xl  rounded-xl group-hover:opacity-80 opacity-0 transition-discrete duration-300">
+                <a href="{{ url_for('profile.view_profile') }}">
+                    <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                        class="w-16 h-16 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                </a>
+                <p class="font-kanit text-md mt-3">{{ current_user.first_name + " " + current_user.last_name }} </p>
+                <p class="font-kanit text-sm">
+                    <i class="fa fa-location-dot"></i>
+                    Matara, Sri Lanka
+                </p>
+                <ul class="flex flex-row gap-2 mt-4 ">
+                    <li><a href="{{ url_for('profile.view_profile') }}"
+                            class="border-2 rounded-md text-xs py-1 px-4 cursor-pointer text-neutral-100 bg-neutral-900 border-neutral-900 hover:text-green-200 transition">View
+                            Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}"
+                            class="border-2 rounded-md text-xs py-1 px-5 cursor-pointer text-neutral-100 bg-neutral-900 border-neutral-900 hover:text-green-200 transition">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

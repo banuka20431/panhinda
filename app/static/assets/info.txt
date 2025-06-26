@@ -1,0 +1,11 @@
+- Home page
+
+logo : Caveat Bursh
+Nav-Items : Signika
+Site-Banner-h1 : Merida
+Site-Banner-h2 : Kode Mono
+Site-Description : Kanit
+Welcome-Note : Gill Sans
+Profile Preview : Fira Mono
+
+

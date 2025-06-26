@@ -1,0 +1,20 @@
+<form action="{{ url_for('profile.view_profile_personal_info')}}" method="post">
+    {{form.hidden_tag()}}
+    <p>
+        {{form.first_name.label}}
+        {{form.first_name(value=current_user.first_name)}}
+    </p>
+    <p>
+        {{form.last_name.label}}
+        {{form.last_name(value=current_user.last_name)}}
+    </p>
+    </p>
+    <p>
+        {{form.username.label}}
+        {{form.username(value=current_user.username)}}
+    </p>
+    <p>
+        {{form.submit()}}
+        <button type="reset">Clear</button>
+    </p>
+</form>
