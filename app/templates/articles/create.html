@@ -1,0 +1,27 @@
+{# templates/articles/create.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+    {% include 'partials/navbar.html' %}
+
+
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+
+    <h2>Create New Article</h2>
+
+    <form method="post" action="{{ url_for('articles.view_create_article') }}">
+        {{ form.hidden_tag() }}
+        <p>{{ form.title.label }} {{form.title() }}</p>
+        <p>{{ form.description.label }} {{ form.description() }}</p>
+        <p>{{ form.category.label }} {{ form.category() }}</p>
+        <p>{{ form.body.label }} {{ form.body() }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <script>
+        CKEDITOR.replace('body');
+    </script>
+
+{% endblock %}

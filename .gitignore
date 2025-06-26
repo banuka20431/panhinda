@@ -1,3 +1,11 @@
+test.*
+flask_session/*
+config.py
+db_populate.py
+app.db
+node_modules/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

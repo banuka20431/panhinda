@@ -1,0 +1,318 @@
+{# templates/profile/index.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% include 'partials/navbar.html' %}
+
+
+<div class="profile-meta">
+
+    <div class="profile-info-container"></div>
+    <form action="{{ url_for('profile.update_profile_picture') }}" method="post" enctype="multipart/form-data">
+        <div class="profile-picture-wrapper">
+            <img src="{{ url_for('static', filename=session.profile_picture_uri) }}" alt="profile picture"
+                class="profile-picture">
+            <label for="file-input" class="profile-picture-overlay">
+                Upload
+                <input id="file-input" type="file" name="pro_pic" accept="image/*">
+            </label>
+        </div>
+        <input type="submit" value="Update Profile Picture">
+    </form>
+    <label for="username">@{{current_user.username}}</label>
+</div>
+<div class="profile-states-info-container">
+    <div class="articles-count">
+        <label for="count">Articles Wrote </label>
+        <div id="count">{{ created_article_count }}</div>
+    </div>
+    <div class="likes-count">
+        <label for="count">Total Likes Gained </label>
+        <div id="count">{{ gained_likes_count }}</div>
+    </div>
+</div>
+</div>
+
+<div class="profile-sub-routes">
+    <a href="/profile/personal-info">
+        <button>Personal Info</button>
+    </a>
+    <a href="/profile/my-articles">
+        <button>My Articles</button>
+    </a>
+    <a href="/profile/my-interests">
+        <button>My Interests</button>
+    </a>
+    <a href="/profile/liked-articles">
+        <button>Liked Articles</button>
+    </a>
+    <a href="/profile/authentication">
+        <button>Authentication</button>
+    </a>
+    <a href="/profile/change-password">
+        <button>Change Password</button>
+    </a>
+    <a href="/profile/delete-account">
+        <button>Delete Account</button>
+    </a>
+</div>
+
+<div class="sub-route-view-wrapper">
+
+    {% if sub_route == 'personal_info' %}
+
+        {% include 'profile/partials/personal_info.html' %}
+
+    {% elif sub_route == 'my_articles' %}
+
+        {% include 'profile/partials/my_articles.html' %}
+
+    {% elif sub_route == 'my_interests' %}
+
+        {% include 'profile/partials/my_interests.html' %}
+
+    
+
+    {% elif sub_route == 'liked_articles' %}
+
+    {% for article in liked_articles %}
+    <p>
+        <a href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a>
+        by {{authors[loop.index0]}}
+    </p>
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+
+<!--
+    
+
+
+<main id="profile">
+
+    <div class="profile-info-container">
+
+        <div id="block--1">
+
+            <form action="/profile/update-profile-picture" method="post" enctype="multipart/form-data">
+
+                <div class="profile-picture-wrapper">
+
+                    <img src="{{ url_for('static', filename=session.profile_picture_uri) }}" alt="profile picture"
+                        class="profile-picture">
+
+                    <label for="file-input" class="profile-picture-overlay">
+                        Upload
+                        <input id="file-input" type="file" name="pro_pic" accept="image/*">
+                    </label>
+                </div>
+
+                <input type="submit" value="Update Profile Picture">
+
+            </form>
+
+            <label for="username">@{{ session.handle }}</label>
+
+            <label for="login-time">logged in at {{ session.logging_time }}</label>
+
+        </div>
+
+        <div id="block--2">
+
+            <div>
+                <label for="articles-count">Articles Wrote </label>
+                <div id="count">{{ created_article_count }}</div>
+            </div>
+            <div>
+                <label for="likes-count">Total Likes Gained </label>
+                <div id="count">{{ gained_likes_count }}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="profile-actions-collection-container">
+
+        <a href="/profile/personal-info">
+            <button class="profile-action-collection-1">Personal Info</button>
+        </a>
+
+        <a href="/profile/my-articles">
+            <button class="profile-action-collection-2">My Articles</button>
+        </a>
+        <a href="/profile/my-interests">
+            <button class="profile-action-collection-3">My Interests</button>
+        </a>
+        <a href="/profile/liked-articles">
+            <button class="profile-action-collection-5">Liked Articles</button>
+        </a>
+        <a href="/profile/authentication">
+            <button class="profile-action-collection-6">Authentication</button>
+        </a>
+        <a href="/profile/login-credentials">
+            <button class="profile-action-collection-7">Change Password</button>
+        </a>
+        <a href="/profile/delete-account">
+            <button class="profile-action-collection-8">Delete Account&nbsp;<div class="fa fa-trash"></div></button>
+        </a>
+    </div>
+
+
+    <div class="form-container">
+
+        {% if sub_route == 'login-credentials' %}
+
+        <h2>change your password</h2>
+        <div class="form-wrapper">
+            <form action="/profile/login-credentials" method="post" class="form">
+                <div class="form-element">
+                    <label for="old-password">
+                        Old Password
+                    </label>
+                    <input type="password" name="old_pwd">
+                </div>
+                <div class="form-element">
+                    <label for="new-password">
+                        New Password
+                    </label>
+                    <input type="password" name="new_pwd">
+                </div>
+                <div class="form-element">
+                    <label for="new-password">
+                        Re Enter New Password
+                    </label>
+                    <input type="password" name="pwd_verify">
+                </div>
+                <div class="form-element" id="form-controllers">
+                    <input type="submit" value="Update" id="personal-info-edit-button">
+                    <input type="reset" value="Clear" id="personal-info-edit-button">
+                </div>
+            </form>
+        </div>
+
+        {% elif sub_route == 'my-articles' %}
+
+        <h2>you haven't wrote any articles yet</h2>
+        <div class="form-wrapper">
+            <form action="/articles" class="form">
+                <div class="form-element">
+                    <input type="submit" value="Create an Article Now&nbsp;&quest;">
+                </div>
+            </form>
+        </div>
+
+
+        {% elif sub_route == 'liked-articles' %}
+
+        <h2>you haven't liked any articles yet</h2>
+        <div class="form-wrapper">
+            <form action="/articles" class="form">
+                <div class="form-element">
+                    <input type="submit" value="Go Read Some Articles&nbsp;&quest;">
+                </div>
+            </form>
+        </div>
+
+        {% elif sub_route == 'authentication' %}
+
+        <div class="form-wrapper">
+
+            {% if not session.auth_code %}
+
+            <form action="/profile/sent_auth" method="post" class="form" id="user-conf-form">
+                <div class="form-element">
+                    <label for="user-phonenumber">
+                        Enter phone number (07*****123)
+                    </label>
+                    <input type="text" name="phone_number" id="user-phonenumber" required>
+
+                </div>
+                <div class="form-element" id="form-controllers">
+                    <input type="submit" name="enter" value="Enter" id="button-submit">
+                    <input type="reset" name="clear" value="Cancel" id="button-clear">
+                </div>
+            </form>
+
+            {% else %}
+
+            <form action="/profile/authenticate" method="post" class="form" id="user-conf-form">
+                <div class="form-element">
+                    <label for="user-authcode">
+                        Enter 6 Digit Code Sent to 07*****123
+                    </label>
+                    <input type="text" name="auth_code" id="user-authcode" required>
+                </div>
+                <div class="form-element" id="form-controllers">
+                    <input type="submit" name="authenticate" value="Authenticate" id="button-submit">
+                    <input type="reset" name="clear" value="Cancel" id="button-clear">
+                </div>
+            </form>
+
+            {% endif %}
+
+        </div>
+
+        {% elif sub_route == 'change-authentication' %}
+
+        <div class="form-wrapper">
+
+            <form action="/profile/change-authentication" method="post" class="form">
+                <div class="form-element">
+                    <label for="user-phonenumber">
+                        Enter New Phone Number
+                    </label>
+                    <input type="text" name="phone_number" id="user-phonenumber" required>
+
+                </div>
+                <div class="form-element" id="form-controllers">
+                    <input type="submit" name="Update" value="update" id="button-submit">
+                    <input type="reset" name="clear" value="Cancel" id="button-clear">
+                </div>
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <h2>update your personal infomation</h2>
+        <div class="form-wrapper">
+            <form action="/profile/edit-personal-info" method="post" class="form">
+                <div class="form-element">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" name="fullname">
+                </div>
+                <div class="form-element">
+                    <label for="username">Username</label>
+                    <input type="text" name="username">
+                </div>
+                <div class="form-element">
+                    <label for="email">Email</label>
+                    <input type="text" name="email">
+                </div>
+                <div class="form-element">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" name="dob" class="input-user-dob">
+                </div>
+                <div class="form-element" id="form-controllers">
+                    <input type="submit" value="Update" id="personal-info-edit-button">
+                    <input type="reset" value="Clear" id="personal-info-edit-button">
+                </div>
+            </form>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+
+-->

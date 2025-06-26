@@ -1,0 +1,104 @@
+{# templates/articles/read.html #}
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% include 'partials/navbar.html' %}
+
+{% include 'partials/search_bar.html' %}
+
+
+{% from 'articles/macros.html' import render_comment with context %}
+
+<div class="mx-5 my-10">
+    <div>
+        <h1 class="font-signika text-neural-500 text-3xl text-center underline underline-offset-4"><a
+                href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a></h1>
+    </div>
+    <div class="flex flex-row gap-3 align-sub items-end mt-3 ml-12">
+        <a href="{{ url_for('profile.view_profile') }}">
+            <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                class="w-13 h-13 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+        </a>
+        <div>
+            <h3><i class="fa fa-tag"></i>&nbsp;{{ article.category.label }}</h3>
+            <h5 class="text-sm">By <a href="#" class="underline underline-offset-2">{{ article.author.first_name + ' ' +
+                    article.author.last_name }}</a></h5>
+        </div>
+        <div class="text-sm">{{article.created | utc_to_local(format='%b. %d, %Y')}}</div>
+        <div class="sm:flex flex-row gap-1 hidden">
+            <div
+                class="flex flex-row gap-1 bg-yellow-300 px-2 py-0.5 text-xs font-semibold hover:text-neutral-500 cursor-pointer transition duration-200 ease-in-out rounded-md rounded-r-none">
+                <label for="count" class="text-sm cursor-pointer">Likes</label>
+                <div id="count" class="text-sm cursor-pointer">{{ article.likes | count }}</div>
+            </div>
+            <div
+                class="flex flex-row gap-1 bg-yellow-300 px-2 py-0.5 text-xs font-semibold hover:text-neutral-500 cursor-pointer transition duration-200 ease-in-out rounded-md rounded-l-none">
+                <label for="count" class="text-sm cursor-pointer">Comments</label>
+                <div id="count" class="text-sm cursor-pointer">{{ article.comments | count }}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mx-2 my-5 bg-yellow-200 px-5 py-3 rounded-xl">
+        <p class="m-1 font-kanit">
+            {{ article.body | safe }}
+        </p>
+    </div>
+
+    <div class="flex flex-row justify-end mr-3 gap-2">
+        <div class="text-xs">
+            Updated on {{ article.edited | utc_to_local('%b. %d, %Y') if article.edited else article.created |
+            utc_to_local('%b. %d, %Y')}}
+        </div>
+        <div class="text-xs text-red-500 underline underline-offset-1">
+            <a href="#">
+                Report this article
+                &nbsp;<i class="fa fa-info-circle"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="flex flex-col ml-5 gap-3">
+        {% if not current_user.id == article.author.id %}
+        <form action="{{ url_for('articles.react', article_id=article.id) }}" method="post">
+            <input type="hidden" name="article_id" value="{{ article.id }}">
+            <label for="like-button" class="text-md font-kanit cursor-pointer">Like this post</label>
+            <button type="submit"><i class="fa-regular fa-thumbs-up cursor-pointer"></i></button>
+        </form>
+        {% endif %}
+        {% if not comment_to_edit %}
+        <form action="{{ url_for('articles.comment', article_id=article.id) }}" method="post" class="flex flex-col items-start w-fit">
+            <textarea name="body" id="comment_body" cols="50" rows="3" placeholder="What's on your mind ?"
+                class="bg-yellow-50 border-3 rounded-md pl-1.5 pt-0.5"></textarea>
+            <input type="hidden" name="article_id" value="{{article.id}}">
+            <input type="submit" id="comment_button" name="comment" value="Post Comment" class="self-end mt-2 px-1.5 py-1 rounded-sm bg-neutral-600 text-amber-50">
+        </form>
+        {% else %}
+        <form action="{{ url_for('articles.edit_comment', article_id=article.id) }}" method="post" class="flex flex-col items-start w-fit">
+            <textarea name="body" id="comment_body" cols="50" rows="3" class="bg-yellow-50 border-3 rounded-md pl-1.5 pt-0.5">{{comment_to_edit.body}}</textarea>
+            <input type="hidden" name="comment_id" value="{{comment_to_edit.id}}">
+            <input type="submit" id="comment_button" name="comment" value="Update Comment" class="self-end mt-2 px-1.5 py-1 rounded-sm bg-neutral-600 text-amber-50">
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+
+<div class="my-15 mx-10">
+    <hr class="mx-auto border-2">
+    {% if article.comments | length == 0 %}
+    <p class="text-md font-mono font-bold text-center m-2">No Comments Yet</p>
+    {% else %}
+        {% for comment in article.comments %}
+            {% if comment_to_edit is none or comment.id != comment_to_edit.id %}
+                {{ render_comment(comment) }}
+                <hr class="border-2">
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}

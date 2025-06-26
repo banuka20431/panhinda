@@ -1,0 +1,22 @@
+{% set interests_count = interests | length %}
+
+{% if not interests_count %}
+    <p>
+        Hmm. It Looks like you haven't any interest specified. Add your interests to receive more personalized
+        suggestions.
+    </p>
+{% else %}
+    <p>You're interested in {{ interests_count }} categories</p>
+    <ul>
+        {% for interest in interests %}
+            <li>{{interest.category.label}}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="{{ url_for('profile.view_profile_my_interests') }}" method="post">
+    {{ form.hidden_tag() }}
+    <p>{{ form.interests.label if not interests_count else 'Add more'  }}</p>
+    <p>{{ form.interests() }}</p>
+    <p>{{ form.submit() }}</p>
+</form>
