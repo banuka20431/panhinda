@@ -4,24 +4,56 @@
 
 {% block body %}
 
-    {% include 'partials/navbar.html' %}
+{% include 'partials/navbar.html' %}
+
+{% include 'partials/flash_messages.html' %}
 
 
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+{% include 'partials/background_texture_1.html' %}
 
-    <h2>Create New Article</h2>
 
-    <form method="post" action="{{ url_for('articles.view_create_article') }}">
+<form method="post" action="{{ url_for('articles.view_create_article') }}"
+    class="flex xl:flex-row flex-col gap-1 mt-10">
+    <div class="flex flex-col gap-5">
+        <p class="font-kanit text-xl text-center bg-yellow-200 text-neutral-500 rounded-md w-[80%] py-3 px-3 mx-auto my-auto">
+            Express yourself freely, without boundaries. From heartfelt experiences to bold opinions, from casual
+            musings to
+            academic insights — Panhinda is your space to speak.
+        </p>
         {{ form.hidden_tag() }}
-        <p>{{ form.title.label }} {{form.title() }}</p>
-        <p>{{ form.description.label }} {{ form.description() }}</p>
-        <p>{{ form.category.label }} {{ form.category() }}</p>
-        <p>{{ form.body.label }} {{ form.body() }}</p>
-        <p>{{ form.submit() }}</p>
-    </form>
+        <p class="flex flex-row gap-4 items-center px-5 py-1 text-2xl ml-3">
+            <i class="fa fa-circle-plus fa-md"></i>
+            {{form.title(class="font-signika py-2 px-3 focus:outline-none focus:border-none bg-neutral-300 w-full
+            opacity-50 rounded-md") }}
+        </p>
+        <p class="flex flex-row gap-4 px-5 py-4 w-auto text-2xl ml-3">
+            <i class="fa fa-circle-plus fa-md"></i>
+            {{ form.description(class='font-signika py-7 px-3 focus:outline-none focus:border-none w-full
+            bg-neutral-300 opacity-50 rounded-md') }}
+        </p>
+        <p class="flex flex-row gap-4 items-center px-5 py-4 w-fit text-2xl mx-3">
+            <i class="fa fa-circle-plus fa-md"></i>
+            {{form.category.label(class="text-md font-signika py-1 px-2 opacity-50 rounded-md")}}
+            {{ form.category(class="text-sm font-signika py-1 px-2 appearance-none focus:outline-none focus:border-none
+            bg-neutral-300 opacity-50 rounded-md") }}
+        </p>
+    </div>
+    <div class="flex flex-col gap-2 px-2 items-end">
+        <p class="mx-4 h-full">
+            {{ form.body() }}
+        </p>
+        <p class="mr-5 mt-2">{{ form.submit(class="inline-flex items-center justify-center rounded-md bg-yellow-600 px-6
+            py-2.75 text-sm font-medium text-white
+            shadow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2
+            transition-colors duration-200 cursor-pointer") }}</p>
+    </div>
+</form>
 
-    <script>
-        CKEDITOR.replace('body');
-    </script>
+<script>
+    var editor = new FroalaEditor('#body', {
+        colorsBackground: ['#FF0000', '#00FF00', '#0000FF', 'REMOVE'],
+        height: 350,
+    });
+</script>
 
 {% endblock %}

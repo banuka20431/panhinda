@@ -5,11 +5,15 @@
     "main": "postcss.config.js",
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.10",
+        "froala-editor": "^4.5.2",
         "postcss-cli": "^11.0.1",
         "swup": "^4.8.2"
     },
     "devDependencies": {
+        "@tailwindcss/typography": "^0.5.16",
         "autoprefixer": "^10.4.21",
+        "install": "^0.13.0",
+        "npm": "^11.4.2",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.10"
     },

@@ -130,12 +130,31 @@
 
 
 @layer utilities {
-  .font-caveat { font-family: 'Caveat_Brush', cursive; }
-  .font-fira { font-family: 'Fira_Mono', monospace; }
-  .font-kanit { font-family: 'Kanit', sans-serif; }
-  .font-kode { font-family: 'Kode_Mono', monospace; }
-  .font-merienda { font-family: 'Merienda', cursive; }
-  .font-noto { font-family: 'Noto_Sans_JP', sans-serif; }
-  .font-signika { font-family: 'Signika', sans-serif; }
-}
+  .font-caveat {
+    font-family: 'Caveat_Brush', cursive;
+  }
 
+  .font-fira {
+    font-family: 'Fira_Mono', monospace;
+  }
+
+  .font-kanit {
+    font-family: 'Kanit', sans-serif;
+  }
+
+  .font-kode {
+    font-family: 'Kode_Mono', monospace;
+  }
+
+  .font-merienda {
+    font-family: 'Merienda', cursive;
+  }
+
+  .font-noto {
+    font-family: 'Noto_Sans_JP', sans-serif;
+  }
+
+  .font-signika {
+    font-family: 'Signika', sans-serif;
+  }
+}

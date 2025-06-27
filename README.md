@@ -9,20 +9,19 @@
   </div>
   
   <p style="font-size: 18px; color: #666; font-weight: 500; margin: 20px 0;">
-    No description provided.
+    A platform to express thoughts, vision, knowledge and humor.
   </p>
 </div>
 
 ---
 
-
-# 🚀 panhinda
+# 🚀 Panhinda
 
 <div align="center">
   
-  **Created by [Team](https://github.com/)**
+  **Created by [Team](https://github.com/banuka20431)**
   
-  🗓️ **Created:** 14/05/2025 
+  🗓️ **Created:** 14/05/2025  
   🔄 **Last Updated:** 22/06/2025
   
 </div>
@@ -35,22 +34,118 @@
 - 🔒 Secure by default
 - 🎨 Customizable themes
 
+---
+
+## 🛠 Technologies Used
+
+- **Flask** – Backend framework
+- **SQLAlchemy** – ORM for database access
+- **Flask-Migrate** – Database migration tool
+- **Tailwind CSS** – CSS framework
+- **JavaScript / Alpine.js** – Lightweight frontend scripting
+- **npm** – Frontend dependency management
+
+---
+
+## 📂 Project Structure
+
+```
+panhinda/
+├── app/                # Main application code
+├── migrations/         # Database migrations
+├── static/             # CSS, JS, and image files
+├── templates/          # HTML templates
+├── config.py           # Configuration file
+├── package.json        # npm configuration
+└── ...
+```
+
+---
+
+## 🧪 Getting Started
+
+Follow these steps to clone and set up the project on your local machine.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/banuka20431/panhinda
+cd panhinda
+```
+
+### 2. Create `config.py`
+
+Create a file named `config.py` in the root directory with the following content:
+
+```python
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+class Config:
+    # Flask security params
+    SECRET_KEY = os.environ.get("SECRET_KEY", 'Rn4T9Z0eHJkVJr5f-nxSWepJUdk')
+    
+    # Flask SQLAlchemy params
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI", f"sqlite:///{os.path.join(basedir, 'app.db')}")
+    SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", "False").lower() == "true"
+
+    # Flask session params
+    SESSION_PERMANENT = os.environ.get("SESSION_PERMANENT", "False").lower() == "true"
+    SESSION_TYPE = os.environ.get("SESSION_TYPE", "filesystem")
+
+    # Mail server params
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", 465))
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "***@gmail.com")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "***")
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "False").lower() == "true"
+    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", "True").lower() == "true"
+
+    # Custom paths
+    USER_DATA_PATH = os.environ.get("USER_DATA_PATH", os.path.join(basedir, "static", "user_data"))
+```
+
+> Replace sensitive values (like `MAIL_USERNAME`, `MAIL_PASSWORD`, and `SECRET_KEY`) before deploying.
+
+### 3. Initialize and Migrate the Database
+
+```bash
+flask db init
+flask db migrate
+flask db upgrade
+```
+
+### 4. Install Frontend Dependencies
+
+```bash
+npm install
+npm run watch
+```
+
+### 5. Run the Application
+
+```bash
+flask run --debug
+```
+
+---
+
+## 🤝 Contribution
+
+Contributions are welcome! Feel free to fork this project, submit pull requests, or open issues.
+
+---
+
 ## 📄 License
 
-This project is licensed under the **Not specified** License.
-
-## 🙏 Acknowledgments
-
-- Thanks to all contributors who helped make this project better
-- Special thanks to the open-source community
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 <div align="center">
   <strong>⭐ Star this repository if you find it helpful!</strong>
-  
-  <br/>
-  
+  <br/><br/>
   <a href="https://github.com/ImJanindu/panhinda">
     <img src="https://img.shields.io/badge/View%20on-GitHub-black?style=for-the-badge&logo=github" alt="View on GitHub"/>
   </a>

@@ -71,7 +71,7 @@ def view_create_article():
     else :
         flash_errors(form)
 
-    return redirect(url_for('auth.create'))
+    return redirect(url_for('articles.view_create_article'))
         
 
 

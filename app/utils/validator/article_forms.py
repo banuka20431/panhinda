@@ -19,9 +19,10 @@ class CreateArticleForm(FlaskForm):
             ),
             Unique(Article, 'title')
         ],
+        render_kw={'placeholder': 'title of your article...'}
     )
 
-    description = StringField(
+    description = TextAreaField(
         "Article Description",
         validators=[
             Length(
@@ -29,11 +30,14 @@ class CreateArticleForm(FlaskForm):
                 max=250,
                 message="Description should be between 5 to 250 characters",
             ),
-            Unique(Article, 'description')
+            Unique(Article, 'description'),
         ],
+        render_kw={'placeholder': 'what is it about?...', 'rows': 3, 'cols': 30}
     )
-    category = SelectField("Article Category")
+    category = SelectField("Choose a suitable category")
+
     body = TextAreaField("Article Body", id="body")
+
     submit = SubmitField("Publish")
 
     def __init__(self, *args, **kwargs):
