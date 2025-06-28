@@ -10,14 +10,15 @@
 
 {% include 'partials/background_texture_1.html' %}
 
-<div class="flex flex-row justify-center gap-15 items-center h-[80%]">
-    <div>
-        <h3 class="font-merienda font-bold text-3xl w-xl">
+<div class="flex flex-col w-full items-center h-[80%] justify-center gap-3 md:gap-20 md:flex-row">
+    <div class="flex flex-col items-center gap-2 md:items-start md:ml-5">
+        <h3 class="font-merienda font-bold text-3xl md:text-xl text-center md:text-left md:w-md">
             Create your own account to get a better expirence
         </h3>
         <a href="{{url_for('auth.login')}}">
-            <button class="font-fira mt-2 ml-1 text-xs font-semibold border-2 px-1 py-1 opacity-50 hover:opacity-65 transition delay-100 cursor-pointer">
-                Already have an account 
+            <button
+                class="font-fira mt-2 ml-1 text-xs font-semibold border-2 px-1 py-1 opacity-50 hover:opacity-65 transition delay-100 cursor-pointer">
+                Already have an account
                 <i class="fa fa-hand"></i>
             </button></a>
     </div>

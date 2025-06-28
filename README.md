@@ -19,7 +19,7 @@
 
 <div align="center">
   
-  **Created by [Team](https://github.com/banuka20431)**
+  **Created by [USJ FOT UG](https://github.com/banuka20431)**
   
   🗓️ **Created:** 14/05/2025  
   🔄 **Last Updated:** 22/06/2025
@@ -84,7 +84,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     # Flask security params
-    SECRET_KEY = os.environ.get("SECRET_KEY", 'Rn4T9Z0eHJkVJr5f-nxSWepJUdk')
+    SECRET_KEY = os.environ.get("SECRET_KEY", 'secret-key')
     
     # Flask SQLAlchemy params
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI", f"sqlite:///{os.path.join(basedir, 'app.db')}")
@@ -139,7 +139,7 @@ Contributions are welcome! Feel free to fork this project, submit pull requests,
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Apache 2.0](LICENSE).
 
 ---
 

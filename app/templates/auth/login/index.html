@@ -9,9 +9,9 @@
 
 {% include 'partials/background_texture_1.html' %}
 
-<div class="flex flex-row justify-center gap-15 h-[80%] items-center">
-    <div>
-        <h3 class="font-merienda font-bold text-3xl w-xl">
+<div class="flex flex-col w-full items-center h-[80%] justify-center gap-3 md:gap-20 md:flex-row">
+    <div class="flex flex-col items-center gap-2 md:items-start md:ml-5">
+        <h3 class="font-merienda font-bold text-3xl md:text-xl text-center md:text-left md:w-md">
             Login to your account for intract with the community more
         </h3>
         <a href="{{url_for('auth.register_user_details')}}">
