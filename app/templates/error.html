@@ -4,8 +4,14 @@
 
 {% block body %}
 
-<h1>Error Occured</h1>
-<p>{{error.message}} Status Code : {{ error.status_code }}</p>
-<p><a href="{{ error.previous_url }}">Go Back</a></p>
+{% include 'partials/background_texture_1.html' %}
+
+<div class="w-full h-[80%] flex flex-col gap-3 items-center justify-center">
+    <i class="fa fa-sad-cry text-6xl"></i>
+    <h1 class="text-5xl font-signika font-bold text-neutral-200">Error Occured</h1>
+    <h2>{{error.message}} &nbsp;&verbar;&nbsp;Status Code : {{ error.status_code }}</h2>
+    <button class="font-noto text-md">
+        <a href="{{ error.previous_url }}"><i class="fa fa-arrow-left"></i>&nbsp;Go Back</a></button>
+</div>
 
 {% endblock %}

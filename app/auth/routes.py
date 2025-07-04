@@ -10,6 +10,7 @@ from urllib.parse import urlsplit
 from flask_mail import Message
 from datetime import datetime, timezone
 from itsdangerous import URLSafeTimedSerializer as Serializer
+from socket import gaierror
 
 from app.utils.validator import (
     LoginForm,
@@ -75,6 +76,12 @@ def login():
             flash_errors(form)
             return redirect(url_for("auth.login"))
         
+        email_verified = db.session.scalar(select(User.verified).where(User.username == form.username.data))
+
+        if not email_verified:
+            flash('Please verify your email before login', category='error')
+            return redirect(url_for('auth.login'))
+        
         session['login_user'] = user
         return redirect(url_for('auth.login_user_verification'))
     
@@ -91,8 +98,12 @@ def login_user_verification():
     if request.method == 'GET':
 
         if not session.get('auth_attempts', False):
-            user.send_otp()
-        
+            try:
+                user.send_otp()
+            except (TimeoutError, gaierror):
+                raise InternalServerError(previous_url=url_for('auth.login'))
+
+         
         if session.get('auth_attempts', 0) == 3:
             
             session.pop('auth_attempts')
@@ -169,8 +180,6 @@ def reset_password():
             raise InternalServerError(previous_url=url_for("auth.login"))
 
         if form.validate_on_submit():
-
-
 
             flash("Password Reset Successfull", category="info")
             return redirect(url_for("auth.login"))

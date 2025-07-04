@@ -4,12 +4,16 @@
 
 {% block body %}
 
-    {% if confirmed %}
-        <h3>Your email has been successfully verified</h3>
-        <p>You can close this window now.</p>
-    {% else %}
-        <p>Sorry. we couldn't verify your email and your account cannot be created</p>
-        <p>You can try to <a href="{{ url_for('auth.register_user_details') }}">register</a> again.</p>
-    {% endif %}
+    {% include 'partials/background_texture_1.html' %}
+    <div class="w-full h-[80%] flex flex-col gap-3 items-center justify-center">
+        {% if confirmed %}
+        <h3 class="text-xl font-signika text-green-500">Your email has been successfully verified</h3>
+        <p class="text-sm">You can close this window now.</p>
+        {% else %}
+        <p class="text-xl font-signika text-red-500">Sorry. we couldn't verify your email</p>
+        <p class="text-sm">Try to <a href="{{ url_for('auth.register_user_details') }}" class="underline underline-offset-2">verify</a> your email again.</p>
+        {% endif %}
+      
+    </div>
 
 {% endblock %}

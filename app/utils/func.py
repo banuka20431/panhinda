@@ -40,7 +40,6 @@ def utc_to_local(dt: datetime, format: str | None = None):
 
 
 def session_get_or_404(key: str):
-    print('here')
     if data := session.get(key, False):
         return data
     abort(404)

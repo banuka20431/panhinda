@@ -28,7 +28,7 @@ def render_error_page_404(e):
 def render_error_page_405(e):
     return render_template('error.html', error=MethodNotAllowedError())
 
-# Handle 500 Internal Server Error and print the error for debugging
+# Handle 500 Internal Server Error 
 @app.errorhandler(500)
 def render_error_page_500(e):
     return render_template('error.html', error=InternalServerError())

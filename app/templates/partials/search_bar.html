@@ -1,10 +1,10 @@
-<form action="{{ url_for('articles.global_search') }}" method="get" class="w-max rounded-md px-20 flex justify-self-center justify-center  sm:mt-10 mt-5 py-3 xs:gap-5 gap-3 opacity-35">
+<form action="{{ url_for('articles.global_search') }}" method="get" 
+    class="flex flex-row gap-3 justify-center mt-5 opacity-55">
     <input type="search" name="q" placeholder="Looking for Something ?"
-        class="font-mono font-bold text-sm sm:px-30 px-5 border-2 rounded-xl py-2 
-        focus-visible:border-b-3 focus-visible:outline-none 
-        focus-visible:transition-discrete"/>
+        class="w-[50%] sm:w-sm px-4 py-2 font-mono font-bold text-sm border-2 rounded-md
+    "/>
     <button type="submit" class="flex-row align-middle justify-center gap-5">
         <i class="fa fa-search text-sm cursor-pointer"></i>
-        <label class="font-mono cursor-pointer">Search</label>
+        <label class="font-kanit cursor-pointer">Search</label>
     </button>
 </form>
