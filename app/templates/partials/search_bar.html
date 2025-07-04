@@ -1,7 +1,7 @@
 <form action="{{ url_for('articles.global_search') }}" method="get" 
     class="flex flex-row gap-3 justify-center mt-5 opacity-55">
-    <input type="search" name="q" placeholder="Looking for Something ?"
-        class="w-[50%] sm:w-sm px-4 py-2 font-mono font-bold text-sm border-2 rounded-md
+    <input type="search" name="q" 
+        class="w-[50%] sm:w-sm px-4 py-2 font-mono font-bold text-sm  rounded-md focus: outline-0 bg-yellow-200 shadow-sm
     "/>
     <button type="submit" class="flex-row align-middle justify-center gap-5">
         <i class="fa fa-search text-sm cursor-pointer"></i>
