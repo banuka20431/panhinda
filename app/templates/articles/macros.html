@@ -4,46 +4,48 @@
 
 {% macro render_comment(comment) %}
 
-<div class=" flex flex-col my-7 text-neutral-600">
+<div class=" flex flex-col my-7 mx-2 text-neutral-800">
     <div class="flex flex-row gap-2">
-        <div class="flex flex-row gap-2 font-fira font-semibold text-sm items-center mb-2">
+        <div class="flex flex-row gap-2 font-kanit font-light text-sm items-center mb-1">
             <span>Posted by</span>
+            <span>
+                &commat;{{ comment.user.username }}
+            </span>
             <a href="{{ url_for('profile.view_profile') }}">
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-7 h-7 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
             </a>
             <span>
-                {{ comment.user.username }}
+                On {{ comment.created | utc_to_local('%b. %d, %Y')}}
             </span>
-            <span>
-                on {{ comment.created | utc_to_local('%b. %d, %Y')}}
-            </span>
-            {% if comment.edited %}
-            <div class="comment-edited">(edited)</div>
-            {% endif %}
         </div>
     </div>
 
-    <div class="w-2xl">
+    <div class="w-full">
         <p
-            class="font-signika text-sm w-fit bg-yellow-200 rounded-md text-neutral-900 font-semibold my-3 px-3 py-3 text-wrap ">
-            {{comment.body }}
+            class="font-sans text-sm w-fit  bg-neutral-400 shadow-neutral-600 shadow-md opacity-90 rounded-md text-neutral-900 font-semibold mb-5 mt-2 px-3 py-3 break-words">
+            {{comment.body }}&nbsp;
+            {% if comment.edited %}
+            <span class="text-sm text-yellow-100">(edited)</span>
+            {% endif %}
         </p>
     </div>
 
-    <div class="flex flex-row gap-3 ml-2">
+    <div class="flex flex-row gap-3">
         {% if comment.user.id == current_user.id %}
         <form action="{{article.id}}/delete_comment" method="post" class="w-fit">
             <input type="hidden" name="comment_id" value="{{comment.id}}">
             <input type="hidden" name="article_id" value="{{article.id}}">
-            <button type="submit" class="text-neutral-600  text-xs underline font-semibold">Delete&nbsp;<i
+            <button type="submit"
+                class="text-neutral-600  text-xs underline font-semibold cursor-pointer hover:text-red-400 transition-colors delay-100">Delete&nbsp;<i
                     class="fa fa-trash"></i></button>
         </form>
 
         <form action="{{article.id}}/edit_comment" method="get" class="w-fit">
             <input type="hidden" name="comment_id" value="{{comment.id}}">
             <input type="hidden" name="article_id" value="{{article.id}}">
-            <button type="submit" class="text-neutral-600  text-xs underline font-semibold">Edit&nbsp;<i
+            <button type="submit"
+                class="text-neutral-600  text-xs underline font-semibold cursor-pointer hover:text-red-400 transition-colors delay-100">Edit&nbsp;<i
                     class="fa fa-pen"></i></button>
         </form>
         {% else %}

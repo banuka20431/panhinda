@@ -21,37 +21,39 @@
     {% for article in articles %}
     <div class="mb-2">
         <div>
-            <h1 class="font-signika text-neural-500 text-3xl"><a
+            <h1 class="font-signika text-neural-500 text-2xl sm:text-3xl text-center sm:text-left"><a
                     href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a></h1>
         </div>
-        <div class="flex flex-row gap-3 align-sub items-end mt-1.5">
+        <div class="flex flex-row gap-3 items-center mt-1.5">
+
             <a href="{{ url_for('profile.view_profile') }}">
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-11 h-11 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
             </a>
-            <div>
+
+            <div class="flex flex-col gap-1">
                 <h3><i class="fa fa-tag"></i>&nbsp;{{ article.category.label }}</h3>
-                <h5 class="text-sm">By <a href="#" class="underline underline-offset-2">{{ article.author.first_name + '
-                        ' +
-                        article.author.last_name }}</a></h5>
+                <h5 class="text-sm">By <a href="#" class="underline underline-offset-2">{{ article.author.first_name}}</a></h5>
+                <div class="text-sm">{{article.created | utc_to_local(format='%b. %d, %Y')}}</div>
             </div>
-            <div class="text-sm">{{article.created | utc_to_local(format='%b. %d, %Y')}}</div>
-            <div class="sm:flex flex-row gap-1 hidden">
+
+            <div class="flex flex-col sm:flex-row gap-1">
                 <div
-                    class="flex flex-row gap-1 bg-yellow-300 px-2 py-0.5 text-xs font-semibold hover:text-neutral-500 cursor-pointer transition duration-200 ease-in-out rounded-md rounded-r-none">
+                    class="flex flex-row gap-1 bg-neutral-300 px-2 py-0.5 text-xs font-mono font-semibold hover:text-neutral-500 cursor-pointer shadow-md transition duration-200 ease-in-out rounded-md sm:rounded-r-none justify-center">
                     <label for="count" class="text-sm cursor-pointer">Likes</label>
                     <div id="count" class="text-sm cursor-pointer">{{ article.likes | count }}</div>
                 </div>
                 <div
-                    class="flex flex-row gap-1 bg-yellow-300 px-2 py-0.5 text-xs font-semibold hover:text-neutral-500 cursor-pointer transition duration-200 ease-in-out rounded-md rounded-l-none">
+                    class="flex flex-row gap-1 bg-neutral-300 px-2 py-0.5 text-xs font-mono font-semibold hover:text-neutral-500 cursor-pointer  shadow-md transition duration-200 ease-in-out rounded-md sm:rounded-l-none">
                     <label for="count" class="text-sm cursor-pointer">Comments</label>
                     <div id="count" class="text-sm cursor-pointer">{{ article.comments | count }}</div>
                 </div>
             </div>
+
         </div>
 
 
-        <div class="mx-2 my-5 bg-yellow-200 px-5 py-3 rounded-xl">
+        <div class="sm:mx-2 my-5 sm:bg-yellow-200 px-5 py-3 rounded-xl border-2 sm:border-0">
             <p class="m-1 font-kanit">
                 {{ article.description | safe }}
                 <a href="{{ url_for('articles.view_article', article_id=article.id) }}">

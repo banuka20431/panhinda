@@ -58,7 +58,7 @@
 
     <div class="shadow-2xl rounded-xl p-6 flex-1  text-center hover:shadow-3xl hover:translate-y-2.5 transition"
         id="read">
-        <a href="{{ url_for('articles.view_article', article_id=1) }}">
+        <a href="{{ url_for('articles.view_articles') }}">
             <i class="fa fa-search fa-4x mb-4 text-yellow-600 "></i>
             <h2 class="font-caveat  text-2xl font-semibold mb-2">Explorer</h2>
             <div class="text-neutral-400 font-semibold">
@@ -69,9 +69,9 @@
 
     <div class="shadow-2xl rounded-xl p-6 flex-1  text-center hover:shadow-3xl hover:translate-y-2.5 transition"
         id="read">
-        <a href="{{ url_for('articles.view_article', article_id=1) }}">
+        <a href="{{ url_for('articles.view_create_article' ) }}">
             <i class="fa fa-book-open-reader fa-4x mb-4 text-yellow-600"></i>
-            <h2 class="font-caveat  text-2xl font-semibold mb-2">Write</h2>
+            <h2 class="font-caveat  text-2xl font-semibold mb-2">Create</h2>
             <div class="text-neutral-400 font-semibold">
                 Create a New Post and Share
             </div>
