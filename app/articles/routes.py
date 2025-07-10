@@ -11,34 +11,57 @@ from app.utils.errors import ContentNotFoundError
 
 from app.utils.validator.article_forms import CreateArticleForm
 from app.utils.func import flash_errors
+from app.utils.sort_engine import Search
 
 
 @bp.route("/", methods=["GET"])
-def view_articles():
+def view_articles(filtered: tuple[int] | None = None):
     if request.method == "GET":
 
         articles = db.session.scalars(select(Article)).all()
 
-        return render_template("articles/index.html", articles=articles)
+        if filtered is None:
+
+            return render_template("articles/index.html", articles=articles)
+        
+        flash(f'{len(filtered)} {'match found' if len(filtered) == 1 else 'matches found' }', category='info')
+
+        return render_template(
+            "articles/index.html", articles=[a for a in articles if a.id in filtered]
+        )
 
 
 @bp.route("/<int:article_id>", methods=["GET"])
-def view_article(article_id: int):
+def view_article(article_id: int, search_matches: list[tuple[int, int]] | None = None):
 
     if request.method == "GET":
-        
+
         article = db.session.get(Article, article_id)
-        
-        if article is None : 
+
+        if article is None:
             abort(404)
 
         comment_to_edit = None
 
         if request.args.get("comment_id_to_edit", False):
-            
+
             comment_to_edit = db.session.get(
                 Comment, int(request.args.get("comment_id_to_edit"))
             )
+
+        if search_matches is not None:
+            body = article.body
+            highlighted_body = ""
+            last_idx = 0
+            for start, end in search_matches:
+                highlighted_body += body[last_idx:start]
+                highlighted_body += "<span style='background-color: rgba(0,255,222,.5);'>" + body[start:end] + "</span>"
+                last_idx = end
+            highlighted_body += body[last_idx:]
+            article.body = highlighted_body
+
+            flash(f'{len(search_matches)} {'match found' if len(search_matches) == 1 else 'matches found' }', category='info')
+            
 
         return render_template(
             "articles/read.html", article=article, comment_to_edit=comment_to_edit
@@ -51,28 +74,31 @@ def view_create_article():
     form = CreateArticleForm()
     if request.method == "GET":
         return render_template("articles/create.html", form=form)
-    
+
     if form.validate_on_submit():
-        
+
         new_article = Article(
             author_id=current_user.id,
             title=form.title.data,
             description=form.description.data,
             body=form.body.data,
-            category_id=db.session.scalar(select(SubCategory.category_id).where(SubCategory.label==form.category.data))
+            category_id=db.session.scalar(
+                select(SubCategory.category_id).where(
+                    SubCategory.label == form.category.data
+                )
+            ),
         )
-        
+
         db.session.add(new_article)
 
         db.session.commit()
 
-        return redirect(url_for('articles.view_article', article_id=new_article.id))
+        return redirect(url_for("articles.view_article", article_id=new_article.id))
 
-    else :
+    else:
         flash_errors(form)
 
-    return redirect(url_for('articles.view_create_article'))
-        
+    return redirect(url_for("articles.view_create_article"))
 
 
 @bp.route("/<int:article_id>/react", methods=["POST"])
@@ -120,7 +146,7 @@ def comment(article_id=None):
             return redirect(url_for("articles.view_article", article_id=article_id))
 
         if len(body) > 1000:
-            flash("Comment must not exceed 1000 characters", category='error')
+            flash("Comment must not exceed 1000 characters", category="error")
 
         else:
 
@@ -190,26 +216,30 @@ def edit_comment(article_id: int):
             body = request.form.get("body")
 
             if len(body) > 1000:
-                flash("Comment must not exceed 1000 characters", category='error')
+                flash("Comment must not exceed 1000 characters", category="error")
 
             else:
-        
+
                 db.session.execute(
-                    update(Comment).where(Comment.id==comment.id).values(body=body, edited=datetime.now(timezone.utc))
+                    update(Comment)
+                    .where(Comment.id == comment.id)
+                    .values(body=body, edited=datetime.now(timezone.utc))
                 )
-        
+
                 db.session.commit()
-            
+
             return redirect(url_for("articles.view_article", article_id=article_id))
 
-@bp.route('<int:id>/search', methods=['GET'])
-def search(article_id=None):
-    query = request.args.get('q')
-    print(query)
-    return redirect(url_for('articles.view_articles'))
 
-@bp.route('/search', methods=['GET'])
+@bp.route("/<int:article_id>/search", methods=["GET"])
+def local_search(article_id):
+    query = request.args.get("q")
+    new_search = Search(query, article_id)
+    return view_article(article_id, search_matches=new_search.get_matches())
+
+
+@bp.route("/search", methods=["GET"])
 def global_search():
-    query = request.args.get('q')
-    print(query)
-    return redirect(url_for('articles.view_articles'))
+    query = request.args.get("q")
+    new_search = Search(query)
+    return view_articles(filtered=new_search.get_results())

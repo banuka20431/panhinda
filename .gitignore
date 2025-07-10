@@ -1,3 +1,4 @@
+test/
 test.*
 flask_session/*
 config.py
