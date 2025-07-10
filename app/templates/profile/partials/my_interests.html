@@ -1,22 +1,31 @@
-{% set interests_count = interests | length %}
+<div class="bg-neutral-300 rounded-lg p-6 shadow-md"></div>
+    {% set interests_count = interests | length %}
 
-{% if not interests_count %}
-    <p>
-        Hmm. It Looks like you haven't any interest specified. Add your interests to receive more personalized
-        suggestions.
-    </p>
-{% else %}
-    <p>You're interested in {{ interests_count }} categories</p>
-    <ul>
-        {% for interest in interests %}
-            <li>{{interest.category.label}}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+    {% if not interests_count %}
+        <p class="text-neutral-900 mb-4">
+            Hmm. It Looks like you haven't any interest specified. 
+            <span class="text-amber-500">Add your interests</span> to receive more personalized suggestions.
+        </p>
+    {% else %}
+        <p class="text-neutral-900 font-semibold mb-2">
+            You're interested in 
+            <span class="bg-yellow-200 text-amber-500 px-2 py-1 rounded">{{ interests_count }}</span> categories
+        </p>
+        <ul class="list-disc pl-6 mb-4">
+            {% for interest in interests %}
+                <li class="text-neutral-900">{{ interest.category.label }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-<form action="{{ url_for('profile.view_profile_my_interests') }}" method="post">
-    {{ form.hidden_tag() }}
-    <p>{{ form.interests.label if not interests_count else 'Add more'  }}</p>
-    <p>{{ form.interests() }}</p>
-    <p>{{ form.submit() }}</p>
-</form>
+    <form action="{{ url_for('profile.view_profile_my_interests') }}" method="post" class="bg-neutral-100 rounded p-4">
+        {{ form.hidden_tag() }}
+        <p class="text-neutral-900 font-medium mb-2">
+            {{ form.interests.label if not interests_count else 'Add more'  }}
+        </p>
+        <p class="mb-2">{{ form.interests(class_="w-full border border-neutral-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500") }}</p>
+        <p>
+            {{ form.submit(class_="bg-amber-500 hover:bg-amber-600 text-neutral-900 font-bold py-2 px-4 rounded transition") }}
+        </p>
+    </form>
+</div>

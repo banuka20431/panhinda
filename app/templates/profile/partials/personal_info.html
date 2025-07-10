@@ -1,20 +1,20 @@
-<form action="{{ url_for('profile.view_profile_personal_info')}}" method="post">
+<form action="{{ url_for('profile.view_profile_personal_info')}}" method="post" class="max-w-md mx-auto bg-neutral-300 rounded-lg shadow-md p-8">
     {{form.hidden_tag()}}
-    <p>
-        {{form.first_name.label}}
-        {{form.first_name(value=current_user.first_name)}}
-    </p>
-    <p>
-        {{form.last_name.label}}
-        {{form.last_name(value=current_user.last_name)}}
-    </p>
-    </p>
-    <p>
-        {{form.username.label}}
-        {{form.username(value=current_user.username)}}
-    </p>
-    <p>
-        {{form.submit()}}
-        <button type="reset">Clear</button>
-    </p>
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Personal Information</h2>
+    <div class="mb-4">
+        <label class="block text-neutral-900 font-semibold mb-1">{{form.first_name.label}}</label>
+        {{form.first_name(class_="w-full px-3 py-2 rounded border border-neutral-900 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-yellow-200 text-neutral-900", value=current_user.first_name)}}
+    </div>
+    <div class="mb-4">
+        <label class="block text-neutral-900 font-semibold mb-1">{{form.last_name.label}}</label>
+        {{form.last_name(class_="w-full px-3 py-2 rounded border border-neutral-900 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-yellow-200 text-neutral-900", value=current_user.last_name)}}
+    </div>
+    <div class="mb-6">
+        <label class="block text-neutral-900 font-semibold mb-1">{{form.username.label}}</label>
+        {{form.username(class_="w-full px-3 py-2 rounded border border-neutral-900 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-yellow-200 text-neutral-900", value=current_user.username)}}
+    </div>
+    <div class="flex space-x-4">
+        {{form.submit(class_="bg-amber-500 hover:bg-amber-400 text-neutral-900 font-bold py-2 px-4 rounded transition")}}
+        <button type="reset" class="bg-yellow-200 hover:bg-amber-500 text-neutral-900 font-bold py-2 px-4 rounded transition">Clear</button>
+    </div>
 </form>

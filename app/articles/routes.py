@@ -3,7 +3,7 @@ from app.articles.models import Article, Comment, Like, Category, SubCategory
 from flask import request, render_template, redirect, url_for, flash, abort
 from app.articles import bp
 
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete, update, and_
 from flask_login import current_user, login_required
 from datetime import datetime, timezone
 
@@ -36,6 +36,12 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
 
     if request.method == "GET":
 
+        liked_before = False
+
+        if current_user.is_authenticated:
+
+            liked_before = db.session.scalar(select(Like).where(and_(Like.user_id==current_user.id, Like.article_id==article_id)))
+
         article = db.session.get(Article, article_id)
 
         if article is None:
@@ -64,7 +70,7 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
             
 
         return render_template(
-            "articles/read.html", article=article, comment_to_edit=comment_to_edit
+            "articles/read.html", article=article, comment_to_edit=comment_to_edit, liked_before=liked_before
         )
 
 

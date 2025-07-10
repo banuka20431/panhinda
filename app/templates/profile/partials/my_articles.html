@@ -1,6 +1,16 @@
- {% for article in articles %}
-    <p>
-        <a href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a>
-        Published on {{article.created | utc_to_local('%b. %d, %Y') }}
-    </p>
-{% endfor %}
+<div class="bg-neutral-300 p-6 rounded-lg shadow-md">
+    <h2 class="text-neutral-900 text-2xl font-bold mb-4">My Articles</h2>
+    <div class="space-y-4">
+        {% for article in articles %}
+            <div class="bg-neutral-900 rounded-md p-4 flex flex-col">
+                <a href="{{ url_for('articles.view_article', article_id=article.id) }}"
+                     class="text-amber-500 text-lg font-semibold hover:underline">
+                    {{ article.title }}
+                </a>
+                <span class="text-yellow-200 text-sm mt-1">
+                    Published on {{article.created | utc_to_local('%b. %d, %Y') }}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+</div>

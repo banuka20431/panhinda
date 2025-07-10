@@ -1,7 +1,8 @@
 <div class="flex flex-row py-5 px-4 shadow-neutral-900 shadow-sm">
     <h1>
         <a href="{{ url_for('index') }}"
-            class="font-sans sm:text-3xl text-2xl  rounded-md px-2 py-1 border-2 border-dashed"><i class="fa fa-feather mx-2"></i></a>
+            class="font-sans sm:text-3xl text-2xl  rounded-md px-2 py-1 border-2 border-dashed"><i
+                class="fa fa-feather mx-2"></i></a>
     </h1>
 
     <nav class="flex sm:gap-4 sm:px-3 items-center text-md  sm:ml-0 ml-3">
@@ -55,25 +56,38 @@
                 current_user.first_name }}</a> !
         </p>
         <div class="relative group">
+
             <a href="{{ url_for('profile.view_profile') }}">
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-10 h-10 object-cover rounded-3xl cursor-pointer border-neutral-900 border-3 shadow-xl">
             </a>
+
             <div
-                class="sm:flex hidden flex-col items-center gap-1 bg-linear-to-tr from-yellow-100 via-yellow-200 to-yellow-400 px-3 py-3 absolute bottom-[-170px] left-[-200px] shadow-xl  rounded-xl group-hover:opacity-80 opacity-0 transition-discrete duration-300">
-                <a href="{{ url_for('profile.view_profile') }}">
-                    <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
-                        class="w-16 h-16 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
-                </a>
-                <p class="font-kanit text-md mt-3">{{ current_user.first_name + " " + current_user.last_name }} </p>
-                <ul class="flex flex-row gap-2 mt-4 ">
-                    <li><a href="{{ url_for('profile.view_profile') }}"
-                            class="border-2 rounded-md text-xs py-1 px-4 cursor-pointer text-neutral-100 bg-neutral-900 border-neutral-900 hover:text-green-200 transition">View
-                            Profile</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}"
-                            class="border-2 rounded-md text-xs py-1 px-5 cursor-pointer text-neutral-100 bg-neutral-900 border-neutral-900 hover:text-green-200 transition">Logout</a>
-                    </li>
-                </ul>
+                class="sm:flex hidden flex-col gap-3 bg-linear-to-tr from-yellow-300 to-neutral-400 border border-neutral-800 px-4 py-4 absolute bottom-[-130px] left-[-230px] w-[250px]  shadow-xl rounded-xl group-hover:opacity-90 opacity-0 transition-all duration-300 z-50">
+
+                <div class="flex flex-row gap-3 items-center">
+                    <a href="{{ url_for('profile.view_profile') }}">
+                        <img src="{{url_for('static', filename='user_data/profiles/default.png')}}"
+                            alt="profile picture"
+                            class="w-14 h-14 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl opacity-90">
+                    </a>
+                    <div class="flex flex-col gap-1 pl-2">
+                        <span class="font-semibold text-neutral-700 text-base">{{ current_user.first_name }} {{ current_user.last_name }}</span>
+                        <span class="text-xs text-neutral-900">{{ session['articles_wrote_count'] }} articles &bull; {{ session['likes_gained'] }} likes</span>
+                    </div>
+                </div>
+
+                
+                <div class="flex flex-row gap-2 mt-1 w-full justify-center">
+                    <a href="{{ url_for('profile.view_profile') }}"
+                        class="flex-1 text-center border border-neutral-700 rounded-md text-xs py-1 px-4 cursor-pointer text-neutral-100 bg-neutral-800 hover:bg-neutral-700 hover:text-green-200 transition-colors duration-200 font-semibold">
+                        View Profile
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}"
+                        class="flex-1 text-center border border-neutral-700 rounded-md text-xs py-1 px-4 cursor-pointer text-neutral-100 bg-neutral-800 hover:bg-neutral-700 hover:text-red-200 transition-colors duration-200 font-semibold">
+                        Logout
+                    </a>
+                </div>
             </div>
         </div>
     </div>
