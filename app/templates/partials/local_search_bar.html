@@ -1,0 +1,10 @@
+<form action="{{ url_for('articles.local_search', article_id=article.id) }}" method="get" 
+    class="flex flex-col sm:flex-row gap-3 justify-center items-center mt-5 opacity-55">
+    <input type="search" name="q" 
+        class="w-[70%] sm:w-sm px-4 py-2 font-mono font-bold text-sm  rounded-md focus: outline-0 bg-yellow-200 shadow-sm 
+    " autocomplete="off"/>
+    <button type="submit" class="flex-row align-middle justify-center gap-5">
+        <i class="fa fa-search text-sm cursor-pointer"></i>
+        <label class="font-kanit cursor-pointer underline underline-offset-3">Search</label>
+    </button>
+</form>
