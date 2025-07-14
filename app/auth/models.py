@@ -73,6 +73,10 @@ class User(UserMixin, db.Model):
         index=True, nullable=True
     )
 
+    email_conf_exp: Mapped[Optional[datetime]] = mapped_column(
+        index=True, nullable=True
+    )
+
     # Relationships
 
     articles: Mapped[list["Article"]] = relationship(back_populates="author")  # type: ignore

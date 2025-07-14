@@ -4,61 +4,112 @@
 
 {% include 'partials/navbar.html' %}
 
-<div class="max-w-3xl mx-auto mt-8 p-6 bg-neutral-100 rounded-lg shadow-md border border-neutral-200">
-    <div class="flex flex-col md:flex-row items-center gap-8">
-        <form action="{{ url_for('profile.update_profile_picture') }}" method="post" enctype="multipart/form-data" class="flex flex-col items-center">
-            <div class="relative group">
-                <img src="{{ url_for('static', filename='user_data/profiles/default.png') }}" alt="profile picture"
-                    class="w-28 h-28 rounded-full border-4 border-neutral-400 object-cover shadow">
-                <label for="file-input" class="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-60 text-amber-200 opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition"></label>
-                    Upload
+{% include 'partials/background_texture_2.html' %}
+
+
+<div class="flex flex-col md:flex-row md:gap-10 p-8 justify-center">
+
+    <div class="max-w-2xl p-6 -100  flex md:flex-col flex-row gap-5 md:gap-3 justify-evenly ">
+
+        <div class="flex flex-col items-center gap-2">
+
+            <form action="{{ url_for('profile.update_profile_picture') }}" method="post" enctype="multipart/form-data"
+                class="flex flex-col items-center">
+                <div class="relative group">
+                    <img src="{{ url_for('static', filename='user_data/profiles/default.png') }}" alt="profile picture"
+                        class="w-28 h-28 rounded-full border-4 border-neutral-900 object-cover shadow-md shadow-neutral-500">
+                    <label for="file-input"
+                        class="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-60 text-amber-200 font-extrabold font-noto opacity-0 group-hover:opacity-100 rounded-full cursor-pointer transition">Upload</label>
                     <input id="file-input" type="file" name="pro_pic" accept="image/*" class="hidden">
-                </label>
+                    </label>
+                </div>
+                <input type="submit" value="Update Profile Picture"
+                    class="mt-2 px-3 py-1.5 rounded text-xs bg-amber-300 text-neutral-800 font-semibold hover:bg-amber-400 cursor-pointer transition">
+            </form>
+            <span class="text-sm font-bold font-signika text-neutral-800">@{{current_user.username}}</span>
+
+        </div>
+
+        <div class="flex md:justify-around md:flex-col justify-center gap-2 items-center md:gap-5">
+            <div class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px] ">
+                <span class="text-neutral-800 font-semibold">Articles Wrote</span>
+                <span class="text-neutral-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{
+                    session['articles_wrote_count'] }}</span>
             </div>
-            <input type="submit" value="Update Profile Picture" class="mt-3 px-4 py-1 rounded bg-amber-500 text-neutral-800 font-semibold hover:bg-amber-400 transition">
-        </form>
-        <div class="flex flex-col items-center md:items-start">
-            <span class="text-lg font-bold text-neutral-800">@{{current_user.username}}</span>
+            <div class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px]">
+                <span class="text-neutral-800 font-semibold">Total Likes Gained</span>
+                <span class="text-netural-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{
+                    session['likes_gained'] }}</span>
+            </div>
         </div>
-    </div>
-    <div class="flex justify-around mt-8 bg-neutral-200 rounded-lg p-4"></div>
-        <div class="flex flex-col items-center">
-            <span class="text-neutral-800 font-semibold">Articles Wrote</span>
-            <span class="text-amber-500 text-xl font-bold">{{ created_article_count }}</span>
-        </div>
-        <div class="flex flex-col items-center">
-            <span class="text-neutral-800 font-semibold">Total Likes Gained</span>
-            <span class="text-amber-500 text-xl font-bold">{{ gained_likes_count }}</span>
-        </div>
-    </div>
-</div>
 
-<div class="max-w-3xl mx-auto mt-6 flex flex-wrap gap-3 justify-center">
-    <a href="/profile/personal-info"></a>
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">Personal Info</button>
-    </a>
-    <a href="/profile/my-articles"></a>
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">My Articles</button>
-    </a>
-    <a href="/profile/my-interests"></a>
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">My Interests</button>
-    </a>
-    <a href="/profile/liked-articles"></a>
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">Liked Articles</button>
-    </a>
-    <a href="/profile/authentication"></a>
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">Authentication</button>
-    </a>
-    <a href="/profile/change-password">
-        <button class="px-4 py-2 rounded bg-neutral-400 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition">Change Password</button>
-    </a>
-    <a href="/profile/delete-account">
-        <button class="px-4 py-2 rounded bg-red-500 text-white font-medium hover:bg-red-600 transition">Delete Account</button>
-    </a>
-</div>
+    </div>
 
-<div class="max-w-3xl mx-auto mt-8 bg-neutral-100 rounded-lg shadow p-6 min-h-[200px]">
-    {% if sub_route == 'personal_info' %}
+    <div class="max-w-3xl mx-auto md:m-0 mt-6 flex md:flex-col flex-wrap gap-3 justify-center">
+        <a href="/profile/personal-info">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 text-neutral-800 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">Personal
+                Info&nbsp;
+                {% if request.path == '/profile/personal-info' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            </button>
+        </a>
+        <a href="/profile/my-articles">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">My
+                Articles&nbsp;
+                {% if request.path == '/profile/my-articles' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            </button>
+        </a>
+        <a href="/profile/my-interests">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">My
+                Interests&nbsp;
+                {% if request.path == '/profile/my-interests' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            </button>
+        </a>
+        <a href="/profile/liked-articles">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">Liked
+                Articles&nbsp;
+                {% if request.path == '/profile/liked-articles' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            
+            </button>
+        </a>
+        <a href="/profile/authentication">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">
+                Authentication&nbsp;
+                {% if request.path == '/profile/authentication' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            </button>
+        </a>
+        <a href="/profile/change-password">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">Change
+                Password&nbsp;
+                {% if request.path == '/profile/change-password' %}
+                <i class="text-green-500 fa fa-circle fa-xs"></i>
+                {% endif %}
+            </button>
+        </a>
+        <a href="/profile/delete-account">
+            <button
+                class="w-50 px-4 py-2 rounded-md bg-red-700 text-black font-medium hover:bg-red-600 hover:text-red-200 transition cursor-pointer">Delete
+                Account <i class="fa fa-trash text-sm"></i></button>
+        </a>
+    </div>
+
+    <div class="min-h-[200px] md:my-auto md:pl-10 items-center mt-5">
+        {% if sub_route == 'personal_info' %}
         {% include 'profile/partials/personal_info.html' %}
     {% elif sub_route == 'my_articles' %}
         {% include 'profile/partials/my_articles.html' %}

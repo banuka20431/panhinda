@@ -10,7 +10,7 @@
         }}
     ">
         <label for="message"
-            class="font-semibold text-xs sm:text-sm {{ 'text-neutral-200' if category=='error' else 'text-neutral-700'}}">{{msg}}</label>
+            class="font-semibold text-xs sm:text-sm {{ 'text-neutral-200' if category=='error' else 'text-neutral-700'}}">{{msg | safe}}</label>
         <i
             class="fa-solid fa-xmark text-xs pt-0.5 {{ 'text-red-900' if category=='error' else 'text-green-900'}} flash-close cursor-pointer"></i>
     </div>

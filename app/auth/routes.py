@@ -4,7 +4,7 @@ from flask_login import current_user, login_user
 from app.auth.models import User
 from app.auth import bp
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from flask_login import logout_user
 from urllib.parse import urlsplit
 from flask_mail import Message
@@ -33,6 +33,8 @@ def send_email_confirmation(user: User):
         SUBJECT, sender=app.config.get("MAIL_USERNAME"), recipients=[user.email]
     )
 
+    db.session.execute(update(User).values(email_conf_exp=datetime.now(timezone.utc)+timedelta(minutes=5)))
+
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
         user_name=user.first_name,
@@ -40,14 +42,46 @@ def send_email_confirmation(user: User):
         current_year=datetime.now(timezone.utc).year,
     )
 
-    print(f'\n\n Sent : {token}\n\n')
-
     try:
         mail.send(mail_conf_mail)
     except:
         return False
     
     return True
+
+@bp.route("/resend-confirmation", methods=['GET', 'POST'])
+def resend_email_confirmation():
+    form = EmailConfirmationResendForm()
+
+    if request.method == 'GET':
+        
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+
+        return render_template('auth/login/resend_email_confirmation.html', form=form)
+    
+    if form.validate_on_submit():
+
+        if db.session.scalar(select(User.verified).where(User.username == form.username.data)):
+
+            flash("That Email has already been verified")
+
+        else:   
+            id, email = db.session.execute(select(User.id, User.email).where(User.username == form.username.data)).first()
+            
+            if not form.email.data == email:
+                flash("Sorry! Couldn't Verify the Email", category='error')
+                return render_template('auth/login/resend_email_confirmation.html', form=form, **form.data)
+
+            user = db.session.get(User, id)
+
+            if timedelta(minutes=5) < user.email_conf_exp.astimezone(timezone.utc) - datetime.now(timezone.utc):
+                send_email_confirmation(user)
+                flash("Senḍ email confirmation successfully", category='info')
+            else:
+                flash("A confirmation email has already been sent to your address")
+
+        return redirect(url_for('auth.login'))
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -79,7 +113,8 @@ def login():
         email_verified = db.session.scalar(select(User.verified).where(User.username == form.username.data))
 
         if not email_verified:
-            flash('Please verify your email before login', category='error')
+            flash('Please verify your email before login>', category='error')
+            flash(f'<a href="{url_for('auth.resend_email_confirmation')}" class="underline underline-offset-2">Need to get the confimation again ?</a>', 'error')
             return redirect(url_for('auth.login'))
         
         session['login_user'] = user

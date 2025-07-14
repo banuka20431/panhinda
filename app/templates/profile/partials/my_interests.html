@@ -1,31 +1,40 @@
-<div class="bg-neutral-300 rounded-lg p-6 shadow-md"></div>
+<div class="rounded-xl p-8 shadow-xl max-w-lg mx-auto ">
+
     {% set interests_count = interests | length %}
 
     {% if not interests_count %}
-        <p class="text-neutral-900 mb-4">
-            Hmm. It Looks like you haven't any interest specified. 
-            <span class="text-amber-500">Add your interests</span> to receive more personalized suggestions.
+        <h1 class="text-md font-bold font-merienda text-neutral-800 mb-2">
+            Hmm. It looks like you haven't specified any interests.
+        </h1>
+        <p class="font-signika text-center mt-2 underline underline-offset-4 text-amber-600">
+            Add your interests to receive more personalized suggestions.
         </p>
     {% else %}
-        <p class="text-neutral-900 font-semibold mb-2">
-            You're interested in 
-            <span class="bg-yellow-200 text-amber-500 px-2 py-1 rounded">{{ interests_count }}</span> categories
+        <p class="text-neutral-900 font-semibold mb-4 text-lg">
+            You're interested in
+            <span class="px-3 py-1 rounded-lg shadow-md ml-1">{{ interests_count }}</span> categories
         </p>
-        <ul class="list-disc pl-6 mb-4">
+        <ul class="list-disc pl-8 mb-6 space-y-2">
             {% for interest in interests %}
-                <li class="text-neutral-900">{{ interest.category.label }}</li>
+                <li class="text-neutral-700 font-medium">{{ interest.category.label }}</li>
             {% endfor %}
         </ul>
     {% endif %}
 
-    <form action="{{ url_for('profile.view_profile_my_interests') }}" method="post" class="bg-neutral-100 rounded p-4">
+    <form action="{{ url_for('profile.view_profile_my_interests') }}" method="post" class="p-4 bg-neutral-700 rounded-xl shadow-inner mt-7">
         {{ form.hidden_tag() }}
-        <p class="text-neutral-900 font-medium mb-2">
-            {{ form.interests.label if not interests_count else 'Add more'  }}
+        <p class="text-neutral-900 font-medium mb-3">
+            {% if not interests_count %}
+                {{ form.interests.label(class="font-signika text-lg") }}
+            {% else %}
+                <span class="font-signika text-lg text-yellow-200">Add more</span>
+            {% endif %}
         </p>
-        <p class="mb-2">{{ form.interests(class_="w-full border border-neutral-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500") }}</p>
+        <p class="mb-4">
+            {{ form.interests(class_="w-full border border-neutral-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-300 bg-yellow-100 shadow-sm") }}
+        </p>
         <p>
-            {{ form.submit(class_="bg-amber-500 hover:bg-amber-600 text-neutral-900 font-bold py-2 px-4 rounded transition") }}
+            {{ form.submit(class_="cursor-pointer bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded-lg transition shadow") }}
         </p>
     </form>
 </div>
