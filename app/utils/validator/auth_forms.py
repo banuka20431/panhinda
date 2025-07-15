@@ -89,6 +89,9 @@ class RegisterationUserDetailsForm(FlaskForm):
 
     submit = SubmitField("Next")
 
+class EmailConfirmationResendForm(FlaskForm):
+    pass
+
 
 class RegistretionUserCredentialsForm(FlaskForm):
 

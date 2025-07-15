@@ -8,7 +8,7 @@ from sqlalchemy import select, update
 from flask_login import logout_user
 from urllib.parse import urlsplit
 from flask_mail import Message
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from socket import gaierror
 
@@ -18,6 +18,8 @@ from app.utils.validator import (
     RegisterationUserDetailsForm,
     ResetPasswordForm,
     RegistretionUserCredentialsForm,
+    EmailConfirmationResendForm
+    
 )
 from app.utils.func import get_sha256_hash, flash_errors, remove_url_suffix, session_get_or_404
 from app.utils.errors import InternalServerError

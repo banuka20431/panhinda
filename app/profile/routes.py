@@ -1,13 +1,14 @@
-from flask import request, render_template, url_for, redirect
+from flask import request, render_template, url_for, redirect, flash
 from flask_login import login_required
-from sqlalchemy import select
+from sqlalchemy import select, update
 from flask_login import current_user
 
 from app import app, db
-from app.articles.models import Article, Like
-from app.auth.models import UserInterest
+from app.articles.models import Article, Like, Category
+from app.auth.models import UserInterest, User
 from app.profile import bp
 from app.utils.validator.profile_forms import PersonalInformationForm, AddInterestsForm
+from app.utils.func import flash_errors
 
 
 @bp.route("/", methods=["GET"])
@@ -29,18 +30,45 @@ def view_profile_personal_info():
             "profile/index.html", sub_route="personal_info", form=form
         )
 
+    if form.validate_on_submit():
+
+        changes = 0
+
+        if form.first_name.data != current_user.first_name:
+            db.session.execute(update(User).values(first_name=form.first_name.data))
+            changes += 1
+        
+        if form.last_name.data != current_user.last_name:
+            db.session.execute(update(User).values(last_name=form.last_name.data))
+            changes += 1
+        
+        if form.first_name.data != current_user.first_name:
+            db.session.execute(update(User).values(username=form.username.data))
+            changes += 1
+
+        if not changes:
+            flash('No updates were made', category='error')        
+        else:
+            flash('Data updated successfully')
+    
+    else:
+
+        flash_errors(form)
+
+    return redirect(url_for('profile.view_profile_personal_info'))
+            
+
 
 @bp.route("/my-articles", methods=["GET", "POST"])
 @login_required
 def view_profile_my_articles():
     if request.method == "GET":
-        with app.app_context():
-            articles = db.session.scalars(
+        
+        articles = db.session.scalars(
                 select(Article).where(Article.author_id == current_user.id)
-            ).all()
-        return render_template(
-            "profile/index.html", sub_route="my_articles", articles=articles
-        )
+        ).all()
+        
+        return render_template("profile/index.html", sub_route="my_articles", articles=articles)
 
 
 @bp.route("/my-interests", methods=["GET", "POST"])
@@ -50,8 +78,7 @@ def view_profile_my_interests():
     form = AddInterestsForm()
     
     if request.method == "GET":
-        
-        
+                
         interests = db.session.scalars(select(UserInterest).where(UserInterest.user_id == current_user.id)).all()
 
         return render_template(
@@ -59,6 +86,7 @@ def view_profile_my_interests():
             sub_route="my_interests",
             interests=interests,
             form=form,
+            category_count=len(Category.query.all())
         )
     
     if form.validate_on_submit():

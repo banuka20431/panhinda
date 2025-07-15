@@ -56,6 +56,7 @@ class Date:
 class UsernameAvailable:
 
     def __call__(self, form, field):
+
         query = select(User.username).where(User.username == field.data)
         if db.session.scalar(query) is not None:
             raise ValidationError(message="Username Not Available")
@@ -68,7 +69,7 @@ class CheckUsername:
             select(User.username).where(User.username == field.data)
         )
         if not user:
-            raise ValidationError(message="User Not Found")
+            raise ValidationError(message="User not found")
 
 class Password:
 
@@ -139,3 +140,4 @@ class Unique:
     def __call__(self, form, field):
         if field.data in self.used_attr_values:
             raise ValidationError(message=f"{field.label} is already have used by someone")
+        

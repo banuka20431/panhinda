@@ -12,8 +12,23 @@ from app.auth.models import UserInterest
 from app.articles.models import Category
 
 
-class PersonalInformationForm(RegisterationUserDetailsForm):
-    username = StringField("Username", validators=[UsernameAvailable()])
+class PersonalInformationForm(FlaskForm):
+    
+    first_name = StringField(
+        "First Name",
+        validators=[
+            Regexp(r"^([a-zA-Z]+\s?){1,}$", message="Invalid First Name"),
+        ],
+    )
+
+    last_name = StringField(
+        "Last Name",
+        validators=[
+            Regexp(r"^([a-zA-Z]+\s?){1,}$", message="Invalid Second Name"),
+        ],
+    )
+
+    username = StringField("Username")
     submit = SubmitField("Update")
 
 
