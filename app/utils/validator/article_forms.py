@@ -17,7 +17,6 @@ class CreateArticleForm(FlaskForm):
             Length(
                 min=5, max=120, message="Title should be between 5 to 120 characters"
             ),
-            Unique(Article, 'title')
         ],
         render_kw={'placeholder': 'title of your article...'}
     )
@@ -30,7 +29,6 @@ class CreateArticleForm(FlaskForm):
                 max=250,
                 message="Description should be between 5 to 250 characters",
             ),
-            Unique(Article, 'description'),
         ],
         render_kw={'placeholder': 'what is it about?...', 'rows': 3, 'cols': 30}
     )

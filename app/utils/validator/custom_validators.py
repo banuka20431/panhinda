@@ -130,14 +130,3 @@ class PhoneNumber:
             query = select(User.phone_number).where(User.id == self.userid)
             if self.hashed_phone_number != db.session.scalar(query):
                 raise ValidationError(message="Phone Number Doesn't Match")
-
-class Unique:
-
-    def __init__(self, model: Any, attr: str):
-        with app.app_context():
-           self.used_attr_values = [article.to_dict()[attr] for article in db.session.scalars(select(model)).all()]
-           
-    def __call__(self, form, field):
-        if field.data in self.used_attr_values:
-            raise ValidationError(message=f"{field.label} is already have used by someone")
-        
