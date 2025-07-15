@@ -4,7 +4,7 @@ from wtforms.validators import Length
 
 from app import app, db
 from app.articles.models import SubCategory, Article, Category
-from app.utils.validator.custom_validators import Unique
+
 
 from sqlalchemy import select
 
