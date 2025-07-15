@@ -1,7 +1,8 @@
-from flask import request, render_template, url_for, redirect, flash
+from flask import request, render_template, url_for, redirect, flash, request
 from flask_login import login_required
 from sqlalchemy import select, update
 from flask_login import current_user
+import requests
 
 from app import app, db
 from app.articles.models import Article, Like, Category
@@ -146,7 +147,39 @@ def view_profile_delete_account():
     if request.method == "GET":
         return render_template("profile/index.html", sub_route="delete_account")
 
+def upload_image_to_catbox(image_path):
+    files = {'fileToUpload': image_path}
+    response = requests.post('https://catbox.moe/user/api.php', files=files, data={'reqtype': 'fileupload'})
+
+    return response.text
+
 @bp.route("/update-profile-picture", methods=["POST"])
 @login_required
 def update_profile_picture():
-    return redirect(url_for('index'))
+    # check if the request contains a image file
+    if 'pro_pic' in request.files:
+        file = request.files['pro_pic']
+    
+    # upload the file to cloud if it exists
+    if file:
+        dpUrl = upload_image_to_catbox(file)
+
+        user = db.session.query(User).filter_by(id=current_user.id).first()
+        user.profile_picture_uri = dpUrl
+        db.session.commit()
+        flash("Profile Picture Updated!", category='success')
+        return redirect(url_for('profile.view_profile'))
+    else:
+        flash("Please select a image", category='error')
+        return redirect(url_for('profile.view_profile'))
+    
+    
+
+@bp.route("/get-profile-picture-uri", methods=["GET"])
+@login_required
+def get_profile_picture_uri():
+    if current_user.profile_picture_uri:
+        print(url_for('profile.get_profile_picture_uri'))
+        return current_user.profile_picture_uri
+    else:
+        return url_for('static', filename='user_data/profiles/default.png')

@@ -58,7 +58,7 @@
         <div class="relative group">
 
             <a href="{{ url_for('profile.view_profile') }}">
-                <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                <img src="{{ current_user.profile_picture_uri }}" alt="profile picture"
                     class="w-10 h-10 object-cover rounded-3xl cursor-pointer border-neutral-900 border-3 shadow-xl">
             </a>
 
@@ -67,7 +67,7 @@
 
                 <div class="flex flex-row gap-3 items-center">
                     <a href="{{ url_for('profile.view_profile') }}">
-                        <img src="{{url_for('static', filename='user_data/profiles/default.png')}}"
+                        <img src="{{ current_user.profile_picture_uri}}"
                             alt="profile picture"
                             class="w-14 h-14 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl opacity-90">
                     </a>

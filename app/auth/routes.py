@@ -166,7 +166,7 @@ def login_user_verification():
 
         match flag:
             case User.TIME_OUT:
-                flash("Authentication Failed! OTP Expired", category='error')
+                flash("Authentication Failed!  Expired", category='error')
                 return redirect('auth.login')
             case User.NOT_MATCHED:
                 flash("OTP Incorrect!", category='error')
