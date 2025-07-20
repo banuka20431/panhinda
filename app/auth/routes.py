@@ -35,7 +35,9 @@ def send_email_confirmation(user: User):
         SUBJECT, sender=app.config.get("MAIL_USERNAME"), recipients=[user.email]
     )
 
-    db.session.execute(update(User).values(email_conf_exp=datetime.now(timezone.utc)+timedelta(minutes=5)))
+    user.email_conf_exp = datetime.now(timezone.utc) + timedelta(minutes=5)
+
+    db.session.commit()    
 
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
@@ -166,7 +168,7 @@ def login_user_verification():
 
         match flag:
             case User.TIME_OUT:
-                flash("Authentication Failed!  Expired", category='error')
+                flash("Authentication Failed!  OTP Expired", category='error')
                 return redirect('auth.login')
             case User.NOT_MATCHED:
                 flash("OTP Incorrect!", category='error')

@@ -19,10 +19,14 @@
         <div class="flex flex-row gap-3 ml-2.5">
 
             <a href="{{ url_for('profile.view_profile') }}">
+                {% if article.author.profile_picture_uri is none %}
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-12 h-12 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                {% else %}
+                <img src="{{article.author.profile_picture_uri}}" alt="profile picture"
+                    class="w-12 h-12 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                {% endif %}
             </a>
-
             <div>
                 <h3><i class="fa fa-tag"></i>&nbsp;{{ article.category.label }}</h3>
                 <h5 class="text-sm">
@@ -52,13 +56,15 @@
     </div>
 
     <div>
-        <h1 class="font-signika text-neural-500 sm:text-3xl text-md text-center sm:underline sm:underline-offset-4 mt-7"><a
-                href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a></h1>
+        <h1
+            class="font-signika text-neural-500 sm:text-3xl text-md text-center sm:underline sm:underline-offset-4 mt-7">
+            <a href="{{ url_for('articles.view_article', article_id=article.id) }}">{{ article.title }}</a></h1>
     </div>
 
 
     <div class="mx-2 mt-5  bg-yellow-50 sm:bg-yellow-100 px-4 sm:px-8 py-6 rounded-xl shadow-md">
-        <div class="font-kanit text-base text-justify sm:text-lg leading-relaxed text-neutral-800 whitespace-pre-line break-words">
+        <div
+            class="font-kanit text-base text-justify sm:text-lg leading-relaxed text-neutral-800 whitespace-pre-line break-words">
             {{ article.body | safe }}
         </div>
     </div>
@@ -81,14 +87,15 @@
         {% if not current_user.id == article.author.id %}
         <form action="{{ url_for('articles.react', article_id=article.id) }}" method="post" class="ml-1.5 mb-2">
             <input type="hidden" name="article_id" value="{{ article.id }}">
-            <label for="like-button" class="text-md font-kanit cursor-pointer">{{ 'Like this post' if not liked_before else 'You\'ve like this post' }}</label>
-            <button type="submit"><i class='{{ "fa-regular" if not liked_before else "fa-solid" }} fa-thumbs-up cursor-pointer'></i></button>
+            <label for="like-button" class="text-md font-kanit cursor-pointer">{{ 'Like this post' if not liked_before
+                else 'You\'ve like this post' }}</label>
+            <button type="submit"><i
+                    class='{{ "fa-regular" if not liked_before else "fa-solid" }} fa-thumbs-up cursor-pointer'></i></button>
         </form>
         {% endif %}
-        
+
         {% if not comment_to_edit %}
-        <form action="{{ url_for('articles.comment', article_id=article.id) }}" method="post"
-            class="flex flex-col">
+        <form action="{{ url_for('articles.comment', article_id=article.id) }}" method="post" class="flex flex-col">
             <textarea name="body" id="comment_body" cols="20" rows="3" placeholder="What's on your mind ?"
                 class="block p-2.5 sm:w-xl w-full text-sm rounded-lg border bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"></textarea>
             <input type="hidden" name="article_id" value="{{article.id}}">

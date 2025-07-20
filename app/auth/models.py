@@ -107,11 +107,7 @@ class User(UserMixin, db.Model):
         self.email = email
         self.phone_number = phone_number
         self.phone_number_last_digits = phone_number_last_digits
-        self.profile_picture_uri = (
-            profile_picture_uri
-            if profile_picture_uri is not None
-            else "user_data/profiles/default.png"
-        )
+        self.profile_picture_uri = profile_picture_uri
 
     def to_dict(self) -> dict:
         return {

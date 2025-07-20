@@ -1,22 +1,25 @@
-<div class="p-6 rounded-lg shadow-xl">
+<div class="flex flex-col items-center justify-center h-[500px]">
     {% if not articles %}
     <h1 class="font-merienda">Hmm.. You haven't published any articles yet</h1>
-    <p class="font-signika text-center mt-2 underline underline-offset-3"><a href="{{url_for('articles.view_create_article')}}">Create your first article now <i class="fa fa-hand underline underline-offset-3"></i></a></p>
+    <p class="font-signika text-center mt-2 underline underline-offset-3">
+        <a href="{{url_for('articles.view_create_article')}}">
+            Create your first article now <i class="fa fa-hand underline underline-offset-3"></i>
+        </a>
+    </p>
     {% else %}
     <h2 class="text-neutral-900 text-2xl font-bold mb-4">My Articles</h2>
-    <div class="space-y-4">
+    <div class="space-y-4 overflow-hidden overflow-y-scroll max-h-[450px] max-w-xl w-full px-2 scrollbar-thin scrollbar-thumb-yellow-300 scrollbar-track-neutral-200 rounded-lg">
         {% for article in articles %}
-        <div class="bg-neutral-900 rounded-md p-4 flex flex-col">
+        <div class="bg-gradient-to-r from-yellow-200 to-neutral-300 rounded-md p-4 flex flex-col shadow-sm">
             <a href="{{ url_for('articles.view_article', article_id=article.id) }}"
-                class="text-amber-500 text-lg font-semibold hover:underline">
+                class="text-neutral-800 text-lg font-semibold hover:underline">
                 {{ article.title }}
             </a>
-            <span class="text-yellow-200 text-sm mt-1">
+            <span class="text-neutral-600 text-sm mt-1">
                 Published on {{article.created | utc_to_local('%b. %d, %Y') }}
             </span>
         </div>
         {% endfor %}
     </div>
     {% endif %}
-
 </div>

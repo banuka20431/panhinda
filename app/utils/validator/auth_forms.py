@@ -32,11 +32,11 @@ class LoginVerificationForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
 
-    password = StringField(
+    password = PasswordField(
         "Password", validators=[DataRequired(message="Cannot be Empty"), Password()]
     )
 
-    verify_password = StringField(
+    verify_password = PasswordField(
         "Retype Password",
         validators=[
             DataRequired(message="Cannot be Empty"),
@@ -100,11 +100,11 @@ class RegistretionUserCredentialsForm(FlaskForm):
         validators=[DataRequired(message="Cannot be Empty"), UsernameAvailable()],
     )
 
-    password = StringField(
+    password = PasswordField(
         "Password", validators=[DataRequired(message="Cannot be Empty"), Password()]
     )
 
-    verify_password = StringField(
+    verify_password = PasswordField(
         "Retype Password",
         validators=[
             DataRequired(message="Cannot be Empty"),

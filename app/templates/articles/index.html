@@ -29,8 +29,13 @@
         <div class="flex flex-row gap-3 items-center mt-1.5">
 
             <a href="{{ url_for('profile.view_profile') }}">
-                <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
-                    class="w-11 h-11 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                {% if article.author.profile_picture_uri is none %}
+                    <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                        class="w-11 h-11 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">    
+                {% else %}
+                    <img src="{{article.author.profile_picture_uri}}" alt="profile picture"
+                        class="w-11 h-11 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">  
+                {% endif %}
             </a>
 
             <div class="flex flex-col gap-1">

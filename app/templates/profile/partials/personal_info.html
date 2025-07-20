@@ -1,7 +1,8 @@
-<form action="{{ url_for('profile.view_profile_personal_info')}}" method="post"
-    class="px-6 py-4 mx-auto rounded-xl shadow-xl flex flex-col gap-3 w-[380px]">
+<div class="flex flex-col text-left gap-5  justify-center">
+    <form action="{{ url_for('profile.view_profile_personal_info')}}" method="post"
+    class="px-6 py-4 mx-auto rounded-xl md:shadow-xl shadow-none flex flex-col gap-3 w-[380px]">
     {{form.hidden_tag()}}
-    <h2 class="text-center text-lg max-w-sm font-merienda">Personal Information</h2>
+    <h2 class="text-center font-bold text-lg max-w-sm font-nato">Change your details</h2>
     <div class="flex flex-col gap-2">
         {{
             form.first_name.label(class="text-sm font-medium text-gray-700 mb-1")
@@ -36,3 +37,4 @@
         <button type="reset" class="bg-amber-500 hover:bg-amber-400 text-sm text-neutral-900 font-signika font-bold py-2 px-4 rounded transition">Clear</button>
     </div>
 </form>
+</div>

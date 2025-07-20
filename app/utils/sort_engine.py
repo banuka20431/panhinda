@@ -258,11 +258,7 @@ class Search:
 
         matches = list(re.finditer(pattern, self.article.body))
 
-        print(matches)
-
         pos = [match.span() for match in matches]
-
-        print(pos)
 
         return pos
 
@@ -291,4 +287,3 @@ class Search:
         
         return tuple(sorted(relavent_articles.keys(), key=lambda article_id: relavent_articles[article_id], reverse=True))
         
-

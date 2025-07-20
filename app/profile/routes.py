@@ -36,20 +36,21 @@ def view_profile_personal_info():
         changes = 0
 
         if form.first_name.data != current_user.first_name:
-            db.session.execute(update(User).values(first_name=form.first_name.data))
+            current_user.first_name=form.first_name.data
             changes += 1
         
         if form.last_name.data != current_user.last_name:
-            db.session.execute(update(User).values(last_name=form.last_name.data))
+            current_user.last_name=form.last_name.data
             changes += 1
         
         if form.first_name.data != current_user.first_name:
-            db.session.execute(update(User).values(username=form.username.data))
+            current_user.username=form.username.data
             changes += 1
 
         if not changes:
             flash('No updates were made', category='error')        
         else:
+            db.session.commit()
             flash('Data updated successfully')
     
     else:
@@ -68,6 +69,8 @@ def view_profile_my_articles():
         articles = db.session.scalars(
                 select(Article).where(Article.author_id == current_user.id)
         ).all()
+
+        print(articles[0].title)
         
         return render_template("profile/index.html", sub_route="my_articles", articles=articles)
 
@@ -106,24 +109,18 @@ def view_profile_my_interests():
 def view_profile_liked_articles():
     if request.method == "GET":
 
-        with app.app_context():
-        
-            liked_articles = [
-                like.article
-                for like in db.session.scalars(
-                    select(Like).where(Like.user_id == current_user.id)
-                ).all()
-            ]
+        liked_articles = [
+            like.article
+            for like in db.session.scalars(
+                select(Like).where(Like.user_id == current_user.id)
+            ).all()
+        ]
 
-            authors = [
-                liked_article.author.username for liked_article in liked_articles
-            ]
 
         return render_template(
             "profile/index.html",
             sub_route="liked_articles",
             liked_articles=liked_articles,
-            authors=authors,
         )
 
 
@@ -156,30 +153,24 @@ def upload_image_to_catbox(image_path):
 @bp.route("/update-profile-picture", methods=["POST"])
 @login_required
 def update_profile_picture():
+    file = None 
     # check if the request contains a image file
     if 'pro_pic' in request.files:
         file = request.files['pro_pic']
     
     # upload the file to cloud if it exists
-    if file:
+    if file is not None:
         dpUrl = upload_image_to_catbox(file)
 
-        user = db.session.query(User).filter_by(id=current_user.id).first()
-        user.profile_picture_uri = dpUrl
+        current_user.profile_picture_uri = dpUrl
+        
         db.session.commit()
-        flash("Profile Picture Updated!", category='success')
-        return redirect(url_for('profile.view_profile'))
-    else:
-        flash("Please select a image", category='error')
-        return redirect(url_for('profile.view_profile'))
-    
-    
 
-@bp.route("/get-profile-picture-uri", methods=["GET"])
-@login_required
-def get_profile_picture_uri():
-    if current_user.profile_picture_uri:
-        print(url_for('profile.get_profile_picture_uri'))
-        return current_user.profile_picture_uri
+        flash("Profile Picture Updated!", category='success')
+
     else:
-        return url_for('static', filename='user_data/profiles/default.png')
+        
+        flash("Please select a image", category='error')
+    
+    return redirect(url_for('profile.view_profile'))
+    

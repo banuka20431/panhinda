@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 27eb30245c40
+Revision ID: 10db057b165f
 Revises: 
-Create Date: 2025-06-16 16:53:48.342217
+Create Date: 2025-07-16 17:58:04.453410
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '27eb30245c40'
+revision = '10db057b165f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,10 +38,12 @@ def upgrade():
     sa.Column('verified', sa.Boolean(), nullable=True),
     sa.Column('otp_hash', sa.String(length=256), nullable=True),
     sa.Column('otp_expiration', sa.DateTime(), nullable=True),
+    sa.Column('email_conf_exp', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_user_email'), ['email'], unique=True)
+        batch_op.create_index(batch_op.f('ix_user_email_conf_exp'), ['email_conf_exp'], unique=False)
         batch_op.create_index(batch_op.f('ix_user_otp_expiration'), ['otp_expiration'], unique=False)
         batch_op.create_index(batch_op.f('ix_user_phone_number'), ['phone_number'], unique=True)
         batch_op.create_index(batch_op.f('ix_user_username'), ['username'], unique=True)
@@ -141,6 +143,7 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_user_username'))
         batch_op.drop_index(batch_op.f('ix_user_phone_number'))
         batch_op.drop_index(batch_op.f('ix_user_otp_expiration'))
+        batch_op.drop_index(batch_op.f('ix_user_email_conf_exp'))
         batch_op.drop_index(batch_op.f('ix_user_email'))
 
     op.drop_table('user')

@@ -58,8 +58,13 @@
         <div class="relative group">
 
             <a href="{{ url_for('profile.view_profile') }}">
+                {% if current_user.profile_picture_uri is none %}
+                <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
+                    class="w-11 h-11 object-cover rounded-full cursor-pointer border-neutral-900 border-3">
+                {% else %}
                 <img src="{{ current_user.profile_picture_uri }}" alt="profile picture"
-                    class="w-10 h-10 object-cover rounded-3xl cursor-pointer border-neutral-900 border-3 shadow-xl">
+                    class="w-11 h-11 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl">
+                {% endif %}
             </a>
 
             <div
@@ -67,17 +72,24 @@
 
                 <div class="flex flex-row gap-3 items-center">
                     <a href="{{ url_for('profile.view_profile') }}">
-                        <img src="{{ current_user.profile_picture_uri}}"
+                        {% if current_user.profile_picture_uri is none %}
+                        <img src="{{url_for('static', filename='user_data/profiles/default.png')}}"
                             alt="profile picture"
-                            class="w-14 h-14 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl opacity-90">
+                            class="w-14 h-14 object-cover rounded-full cursor-pointer border-neutral-900 border-3">
+                        {% else %}
+                        <img src="{{ current_user.profile_picture_uri }}" alt="profile picture"
+                            class="w-14 h-14 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl">
+                        {% endif %}
                     </a>
                     <div class="flex flex-col gap-1 pl-2">
-                        <span class="font-semibold text-neutral-700 text-base">{{ current_user.first_name }} {{ current_user.last_name }}</span>
-                        <span class="text-xs text-neutral-900">{{ session['articles_wrote_count'] }} articles &bull; {{ session['likes_gained'] }} likes</span>
+                        <span class="font-semibold text-neutral-700 text-base">{{ current_user.first_name }} {{
+                            current_user.last_name }}</span>
+                        <span class="text-xs text-neutral-900">{{ session['articles_wrote_count'] }} articles &bull; {{
+                            session['likes_gained'] }} likes</span>
                     </div>
                 </div>
 
-                
+
                 <div class="flex flex-row gap-2 mt-1 w-full justify-center">
                     <a href="{{ url_for('profile.view_profile') }}"
                         class="flex-1 text-center border border-neutral-700 rounded-md text-xs py-1 px-4 cursor-pointer text-neutral-100 bg-neutral-800 hover:bg-neutral-700 hover:text-green-200 transition-colors duration-200 font-semibold">

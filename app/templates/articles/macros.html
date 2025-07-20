@@ -12,8 +12,13 @@
                 &commat;{{ comment.user.username }}
             </span>
             <a href="{{ url_for('profile.view_profile') }}">
+                {% if comment.user.profile_picture_uri is none %}
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-7 h-7 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                {% else %}
+                <img src="{{comment.user.profile_picture_uri}}" alt="profile picture"
+                    class="w-7 h-7 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">
+                {% endif %}
             </a>
             <span>
                 On {{ comment.created | utc_to_local('%b. %d, %Y')}}

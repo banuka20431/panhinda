@@ -1,0 +1,30 @@
+<div class="flex flex-col items-center justify-center h-full">
+    {% if not liked_articles %}
+    <h1 class="font-merienda">Hmm.. You haven't liked any articles yet</h1>
+    <p class="font-signika text-center mt-2 underline underline-offset-3">
+        <a href="{{ url_for('articles.view_articles') }}">
+            Browse articles to like
+            <i class="fa fa-hand underline underline-offset-3"></i>
+        </a>
+    </p>
+    {% else %}
+    <h2 class="text-neutral-900 text-2xl font-bold mb-4">Liked Articles</h2>
+    <div class="space-y-4 overflow-hidden overflow-y-scroll max-h-[450px] max-w-xl w-full px-2 scrollbar-thin scrollbar-thumb-yellow-300 scrollbar-track-neutral-200 rounded-lg">
+        {% for article in liked_articles %}
+        <div class="bg-gradient-to-r from-yellow-200 to-neutral-300 rounded-md p-4 flex flex-col">
+            <a href="{{ url_for('articles.view_article', article_id=article.id) }}"
+                class="text-neutral-800 text-lg font-semibold hover:underline">
+                {{ article.title }}
+            </a>
+            <span class="text-neutral-600 text-sm mt-1">
+                Published on {{article.created | utc_to_local('%b. %d, %Y') }}
+            </span>
+            <span class="text-neutral-500 text-xs mt-1">
+                By {{ article.author.username }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>

@@ -18,16 +18,18 @@ from app.utils.sort_engine import Search
 def view_articles(filtered: tuple[int] | None = None):
     if request.method == "GET":
 
-        articles = db.session.scalars(select(Article)).all()
+        articles_ = db.session.scalars(select(Article)).all()
+
+        articles = [article for article in articles_ if article.author.id != current_user.id]
 
         if filtered is None:
 
             return render_template("articles/index.html", articles=articles)
         
-        flash(f'{len(filtered)} {'match found' if len(filtered) == 1 else 'matches found' }', category='info')
-
+        flash(f'{len(filtered)} {'article found' if len(filtered) == 1 else 'articles found' }', category='info')
+        
         return render_template(
-            "articles/index.html", articles=[a for a in articles if a.id in filtered]
+            "articles/index.html", articles=[a for a in articles_ if a.id in filtered]
         )
 
 
@@ -170,11 +172,9 @@ def comment(article_id=None):
 
                 if comment.user.id == int(current_user.id) and comment.body != body:
 
-                    db.session.execute(
-                        update(Comment)
-                        .where(Comment.id == int(comment_id))
-                        .values(body=body, edited=datetime.now(timezone.utc))
-                    )
+                    comment.body = body 
+                    comment.edited = datetime.now(timezone.utc)
+
                     db.session.commit()
 
         return redirect(url_for("articles.view_article", article_id=article_id))
@@ -226,11 +226,8 @@ def edit_comment(article_id: int):
 
             else:
 
-                db.session.execute(
-                    update(Comment)
-                    .where(Comment.id == comment.id)
-                    .values(body=body, edited=datetime.now(timezone.utc))
-                )
+                comment.body = body
+                comment.edited = datetime.now(timezone.utc)
 
                 db.session.commit()
 
@@ -248,4 +245,5 @@ def local_search(article_id):
 def global_search():
     query = request.args.get("q")
     new_search = Search(query)
+    a = new_search.get_results()
     return view_articles(filtered=new_search.get_results())
