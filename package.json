@@ -1,38 +1,22 @@
 {
-    "name": "panhinda",
-    "version": "1.0.0",
-    "description": "<div align=\"center\">\r   <img src=\"https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=50&duration=4000&pause=1000&color=FFFFFF&background=000000&center=true&vCenter=true&width=800&height=100&lines=PANHINDA\" alt=\"panhinda\" />",
-    "main": "postcss.config.js",
     "dependencies": {
-        "@tailwindcss/postcss": "^4.1.10",
         "froala-editor": "^4.5.2",
-        "postcss-cli": "^11.0.1",
         "swup": "^4.8.2"
     },
     "devDependencies": {
-        "@tailwindcss/typography": "^0.5.16",
+        "@tailwindcss/postcss": "^4.1.10",
         "autoprefixer": "^10.4.21",
-        "install": "^0.13.0",
+        "cssnano": "^7.1.0",
         "npm": "^11.4.2",
         "postcss": "^8.5.6",
+        "postcss-cli": "^11.0.1",
+        "postcss-preset-env": "^10.2.4",
         "tailwind-scrollbar-utilities": "^0.3.0",
         "tailwindcss": "^4.1.10"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
         "build": "postcss app/static/css/styles.css -o app/static/css/output.css",
         "watch": "postcss app/static/css/styles.css -o app/static/css/output.css --watch"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/banuka20431/panhinda.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/banuka20431/panhinda/issues"
-    },
-    "homepage": "https://github.com/banuka20431/panhinda#readme",
     "type": "module"
 }

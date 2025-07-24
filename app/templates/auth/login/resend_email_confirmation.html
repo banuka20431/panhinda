@@ -1,7 +1,8 @@
-{# templates/auth/password_reset.html #}
-
+{# templates/auth/login/verification.html #}
 
 {% extends 'base.html' %}
+
+{% block body %}
 
 {% include 'partials/navbar.html' %}
 
@@ -9,43 +10,34 @@
 
 {% include 'partials/background_texture_1.html' %}
 
-{% block body %}
-
 
 <div class="flex flex-col w-full min-h-[82%] items-center justify-center gap-3 md:gap-20 md:flex-row scrollbar-stable">
-    <div class="flex flex-col items-center gap-2 md:items-start md:ml-5 mt-5">
+   <div class="flex flex-col items-center gap-2 md:items-start md:ml-5 mt-5">
         <h3 class="font-signika text-xl md:text-2xl text-center md:text-left md:w-md max-w-sm">
-            Let's reset your password
+            Let's confirm your email
         </h3>
-        <a href="{{url_for('auth.register_user_details')}}">
+        <a href="{{url_for('auth.login')}}">
             <button
                 class="font-fira mt-2 ml-1 text-xs font-semibold border-2 px-1 py-1 opacity-50 hover:opacity-65 transition delay-100 cursor-pointer">
-                Ohh. just remebered my password
+                Did not receive the confirmation link
                 <i class="fa fa-hand"></i>
             </button>
         </a>
     </div>
     <div>
-        <form action="{{ url_for('auth.reset_password') }}" method="post"
+        <form action="{{ url_for('auth.resend_email_confirmation') }}" method="post"
             class="px-6 py-4 rounded-xl sm:shadow-xl sm:bg-linear-to-br sm:from-yellow-100 sm:via-yellow-150 sm:to-yellow-200 flex flex-col gap-3 w-[380px]">
             {{ form.hidden_tag() }}
             <div class="flex flex-col gap-2">
+                {{ form.username.label(class="block text-sm font-medium text-gray-700 mb-1") }}
+                {{ form.username(class="w-full rounded-md bg-neutral-700 px-3 py-2 text-sm shadow-sm text-neutral-50
+                font-semibold
+                placeholder-neutral-50
+                focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600") }}
+            </div>
+            <div class="flex flex-col gap-2">
                 {{ form.email.label(class="block text-sm font-medium text-gray-700 mb-1") }}
                 {{ form.email(class="w-full rounded-md bg-neutral-700 px-3 py-2 text-sm shadow-sm text-neutral-50
-                font-semibold
-                placeholder-neutral-50
-                focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600") }}
-            </div>
-            <div class="flex flex-col gap-2">
-                {{ form.password.label(class="block text-sm font-medium text-gray-700 mb-1") }}
-                {{ form.password(class="w-full rounded-md bg-neutral-700 px-3 py-2 text-sm shadow-sm text-neutral-50
-                font-semibold
-                placeholder-neutral-50
-                focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600") }}
-            </div>
-            <div class="flex flex-col gap-2">
-                {{ form.verify_password.label(class="block text-sm font-medium text-gray-700 mb-1") }}
-                {{ form.verify_password(class="w-full rounded-md bg-neutral-700 px-3 py-2 text-sm shadow-sm text-neutral-50
                 font-semibold
                 placeholder-neutral-50
                 focus:outline-none border-2 focus:border-neutral-950 focus:bg-neutral-600") }}

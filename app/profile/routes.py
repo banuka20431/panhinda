@@ -11,6 +11,8 @@ from app.profile import bp
 from app.utils.validator.profile_forms import PersonalInformationForm, AddInterestsForm
 from app.utils.func import flash_errors
 
+from app.utils.validator.auth_forms import LogonResetPasswordForm
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -43,7 +45,7 @@ def view_profile_personal_info():
             current_user.last_name=form.last_name.data
             changes += 1
         
-        if form.first_name.data != current_user.first_name:
+        if form.username.data != current_user.username:
             current_user.username=form.username.data
             changes += 1
 
@@ -65,12 +67,12 @@ def view_profile_personal_info():
 @login_required
 def view_profile_my_articles():
     if request.method == "GET":
+
         
         articles = db.session.scalars(
                 select(Article).where(Article.author_id == current_user.id)
         ).all()
 
-        print(articles[0].title)
         
         return render_template("profile/index.html", sub_route="my_articles", articles=articles)
 
@@ -116,7 +118,6 @@ def view_profile_liked_articles():
             ).all()
         ]
 
-
         return render_template(
             "profile/index.html",
             sub_route="liked_articles",
@@ -124,18 +125,21 @@ def view_profile_liked_articles():
         )
 
 
-@bp.route("/authentication", methods=["GET", "POST"])
-@login_required
-def view_profile_authentication():
-    if request.method == "GET":
-        return render_template("profile/index.html", sub_route="authentication")
-
-
 @bp.route("/change-password", methods=["GET", "POST"])
 @login_required
 def view_profile_change_password():
+    form = LogonResetPasswordForm()
     if request.method == "GET":
-        return render_template("profile/index.html", sub_route="change_password")
+        return render_template("profile/index.html", sub_route="change_password", form=form)
+    
+    if form.validate_on_submit():
+        current_user.set_password(form.password.data)
+        flash("Password updated successfully")
+        db.session.commit()
+    else:
+        flash_errors(form)
+    
+    return redirect(url_for('profile.view_profile_change_password'))
 
 
 @bp.route("/delete-account", methods=["GET", "POST"])

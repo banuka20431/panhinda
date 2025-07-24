@@ -13,6 +13,8 @@ from app.utils.validator.article_forms import CreateArticleForm
 from app.utils.func import flash_errors
 from app.utils.sort_engine import Search
 
+from random import randint
+
 
 @bp.route("/", methods=["GET"])
 def view_articles(filtered: tuple[int] | None = None):
@@ -20,7 +22,12 @@ def view_articles(filtered: tuple[int] | None = None):
 
         articles_ = db.session.scalars(select(Article)).all()
 
-        articles = [article for article in articles_ if article.author.id != current_user.id]
+        if current_user.is_authenticated:
+            articles = [article for article in articles_ if article.author.id != current_user.id]
+        
+        else:
+
+            articles = articles_
 
         if filtered is None:
 
@@ -74,6 +81,12 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
         return render_template(
             "articles/read.html", article=article, comment_to_edit=comment_to_edit, liked_before=liked_before
         )
+    
+@bp.route("/rand", methods=["GET"])
+def view_suggested_article():
+    if request.method == 'GET':
+        suggested_id = randint(1, db.session.scalars(select(Article)).all()[-1].id)
+        return redirect(url_for('articles.view_article', article_id=suggested_id))
 
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -107,6 +120,24 @@ def view_create_article():
         flash_errors(form)
 
     return redirect(url_for("articles.view_create_article"))
+
+
+@bp.route("/delete/<int:article_id>", methods=["GET", "POST"])
+@login_required
+def view_delete_article(article_id):
+    db.session.execute(delete(Article).where(Article.id==article_id))
+    db.session.commit()
+    return redirect(url_for('profile.view_profile_my_articles'))
+
+
+@bp.route("/edit/<int:article_id>", methods=["GET", "POST"])
+@login_required
+def view_edit_article(article_id):
+    
+    if request.method == 'GET':
+        db.session.execute(delete(Article).where(id=article_id))
+    
+    return redirect(url_for('profile.view_profile_my_articles'))
 
 
 @bp.route("/<int:article_id>/react", methods=["POST"])

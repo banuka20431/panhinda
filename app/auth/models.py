@@ -163,7 +163,6 @@ class User(UserMixin, db.Model):
         mail.send(auth_otp_mail)
 
     def verify_otp(self, entered_otp: str) -> tuple[bool, int]:
-        print(self.otp_expiration)
         if self.otp_expiration < datetime.now(timezone.utc):
             return False, self.TIME_OUT
         if get_sha256_hash(entered_otp) != self.otp_hash:

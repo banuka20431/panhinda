@@ -8,16 +8,35 @@
     </p>
     {% else %}
     <h2 class="text-neutral-900 text-2xl font-bold mb-4">My Articles</h2>
-    <div class="space-y-4 overflow-hidden overflow-y-scroll max-h-[450px] max-w-xl w-full px-2 scrollbar-thin scrollbar-thumb-yellow-300 scrollbar-track-neutral-200 rounded-lg">
+    <div
+        class="space-y-4 overflow-hidden overflow-y-scroll max-h-[450px] max-w-xl w-full px-2 scrollbar-thin scrollbar-thumb-yellow-300 scrollbar-track-neutral-200 rounded-lg">
         {% for article in articles %}
         <div class="bg-gradient-to-r from-yellow-200 to-neutral-300 rounded-md p-4 flex flex-col shadow-sm">
             <a href="{{ url_for('articles.view_article', article_id=article.id) }}"
-                class="text-neutral-800 text-lg font-semibold hover:underline">
+                class="text-neutral-800 text-lg font-semibold hover:underline text-left">
                 {{ article.title }}
             </a>
-            <span class="text-neutral-600 text-sm mt-1">
-                Published on {{article.created | utc_to_local('%b. %d, %Y') }}
-            </span>
+            <div class="flex md:flex-row flex-col items-center gap-2">
+                <span class="text-neutral-600 text-sm mt-1">
+                    Published on {{article.created | utc_to_local('%b. %d, %Y') }}
+                </span>
+                <span class="px-2 pb-1 rounded-md bg-yellow-200 flex flex-row gap-2">
+
+                    <form action="{{url_for('articles.view_delete_article', article_id=article.id)}}">
+                        <button type="submit" class="text-neutral-600  text-xs font-semibold cursor-pointer hover:text-red-400 transition-colors delay-100">
+                            Delete&nbsp;
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </a>
+
+                    <form action="{{url_for('articles.view_edit_article', article_id=article.id)}}">
+                        <button type="submit" class="text-neutral-600  text-xs font-semibold cursor-pointer hover:text-red-400 transition-colors delay-100">
+                            Edit&nbsp;
+                            <i class="fa fa-pen"></i>
+                        </button>
+                    </form>
+                </span>
+            </div>
         </div>
         {% endfor %}
     </div>

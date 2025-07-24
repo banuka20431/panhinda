@@ -16,9 +16,10 @@ from app.utils.validator import (
     LoginForm,
     LoginVerificationForm,
     RegisterationUserDetailsForm,
-    ResetPasswordForm,
     RegistretionUserCredentialsForm,
-    EmailConfirmationResendForm
+    EmailConfirmationResendForm,
+    ResetPasswordForm,
+    PasswordResetUserVerificationForm
     
 )
 from app.utils.func import get_sha256_hash, flash_errors, remove_url_suffix, session_get_or_404
@@ -42,7 +43,7 @@ def send_email_confirmation(user: User):
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
         user_name=user.first_name,
-        link=url_for("auth.verify_email", token=token, _external=True),
+        link=f"https://clnhr9pt-5000.asse.devtunnels.ms/{url_for("auth.verify_email", token=token)}",
         current_year=datetime.now(timezone.utc).year,
     )
 
@@ -65,7 +66,7 @@ def resend_email_confirmation():
         return render_template('auth/login/resend_email_confirmation.html', form=form)
     
     if form.validate_on_submit():
-
+   
         if db.session.scalar(select(User.verified).where(User.username == form.username.data)):
 
             flash("That Email has already been verified")
@@ -79,13 +80,18 @@ def resend_email_confirmation():
 
             user = db.session.get(User, id)
 
-            if timedelta(minutes=5) < user.email_conf_exp.astimezone(timezone.utc) - datetime.now(timezone.utc):
+            if timedelta(minutes=5) < (datetime.now(timezone.utc) - user.email_conf_exp.astimezone(timezone.utc)):
                 send_email_confirmation(user)
                 flash("Senḍ email confirmation successfully", category='info')
             else:
                 flash("A confirmation email has already been sent to your address")
 
         return redirect(url_for('auth.login'))
+    
+    else:
+        
+        flash_errors(form)
+        return redirect(url_for('auth.resend_email_confirmation'))
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -117,7 +123,7 @@ def login():
         email_verified = db.session.scalar(select(User.verified).where(User.username == form.username.data))
 
         if not email_verified:
-            flash('Please verify your email before login>', category='error')
+            flash('Please verify your email before login', category='error')
             flash(f'<a href="{url_for('auth.resend_email_confirmation')}" class="underline underline-offset-2">Need to get the confimation again ?</a>', 'error')
             return redirect(url_for('auth.login'))
         
@@ -189,7 +195,6 @@ def login_user_verification():
         else:
 
             next_page = remove_url_suffix(next_page, ["/react", "/comment"])
-            print("?next=" + next_page)
 
             if not next_page or urlsplit(next_page).netloc != "":
                 next_page = url_for("index")
@@ -209,25 +214,62 @@ def reset_password():
     form = ResetPasswordForm()
 
     if request.method == "GET":
-        return render_template("auth/password_reset.html", form=form)
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        return render_template("auth/login/password_reset.html", form=form)
 
-    if request.method == "POST":
+    if form.validate_on_submit():
 
         attampted_login_username = session.pop("attampted_user", None)
 
         if attampted_login_username is None:
             raise InternalServerError(previous_url=url_for("auth.login"))
-
-        if form.validate_on_submit():
-
-            flash("Password Reset Successfull", category="info")
-            return redirect(url_for("auth.login"))
-
+        
         else:
-            flash_errors(form)
-            return redirect(url_for("auth.reset_password"))
+            u = db.session.scalar(select(User).where(User.username == attampted_login_username))
 
+            if u.email != form.email.data:
+                flash("User Couldn't be verified", category='error')
+                flash("Password reset failed", category='error')
+                return redirect(url_for('auth.login'))
+            
+            u.set_password(form.password.data)
 
+            session['u'] = u
+
+            u.send_otp()
+
+            return redirect(url_for('auth.reset_password_user_verification'))
+
+    else:
+            
+        flash_errors(form)
+
+        return redirect(url_for("auth.reset_password"))
+        
+@bp.route("auth/reset-password-user-verification", methods=["GET", "POST"])
+def reset_password_user_verification():
+
+    form = PasswordResetUserVerificationForm()
+    if request.method == 'GET':
+        return render_template('auth/login/reset_password_user_verification.html', form=form)
+
+    if form.validate_on_submit():
+
+        user: User = session.pop("u", None)
+
+        if user is None:
+            raise InternalServerError(previous_url=url_for("auth.login"))
+        
+        if user.otp_hash == get_sha256_hash(form.otp.data):
+            db.session.execute(update(User).values(password_hash=user.password_hash))
+            db.session.commit()
+            flash("Password reset successfully")
+        else:
+            flash("User couldn't be verified")
+    
+    return redirect(url_for('auth.login'))
+    
 @bp.route("/register/user-details", methods=["GET", "POST"])
 def register_user_details():
 
@@ -250,6 +292,7 @@ def register_user_details():
             phone_number=get_sha256_hash(form.phone_number.data),
             phone_number_last_digits=form.phone_number.data[-1:-4],
         )
+
         session["new_user"] = new_user
 
         return redirect(url_for("auth.register_user_credentials"))
@@ -316,8 +359,6 @@ def verify_email(token):
     confirmed = False
 
     if token:
-
-        print(f'\n\n verify : {token}\n\n')
 
         if email := User.verify_email_token(token):
             user = db.session.scalar(select(User).where(User.email==email))

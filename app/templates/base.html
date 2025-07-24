@@ -10,14 +10,17 @@
     <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet' type='text/css'/>
     <script type='text/javascript' src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
     <script src="{{ url_for('static', filename='js/script.js')}}"></script>
+     <script type="module" src="{{ url_for('static', filename='js/swup.js')}}"></script>
+
 
     {% block head %}{% endblock %}
     <title>Demo</title>
 </head>
 
 <body class="from-yellow-200  to-neutral-400 bg-linear-to-br pb-5">
-
-    {% block body %}{% endblock %}
+    <main id="swup" class="transition-main">
+        {% block body %}{% endblock %}
+    </main>
 
 </body>
 

@@ -64,6 +64,10 @@ class UsernameAvailable:
 
 class CheckUsername:
 
+    """
+    Checks whether the entered username is presents in db
+    """
+
     def __call__(self, form, field):
         user: User = db.session.scalar(
             select(User.username).where(User.username == field.data)

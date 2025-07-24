@@ -38,6 +38,7 @@
                         class="mt-2 px-3 py-1.5 rounded text-xs bg-amber-300 text-neutral-800 font-semibold hover:bg-amber-400 cursor-pointer transition">
                 </form>
                 <span class="text-sm font-bold font-signika text-neutral-800">@{{current_user.username}}</span>
+                <a href="{{url_for('auth.logout')}}" class="sm:hidden"><span class="bg-red-600 rounded-md font-signika text-sm px-2 py-1">Logout</span></a>
 
             </div>
 
@@ -96,15 +97,6 @@
 
                 </button>
             </a>
-            <a href="/profile/authentication">
-                <button
-                    class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">
-                    Authentication&nbsp;
-                    {% if request.path == '/profile/authentication' %}
-                    <i class="text-green-500 fa fa-circle fa-xs"></i>
-                    {% endif %}
-                </button>
-            </a>
             <a href="/profile/change-password">
                 <button
                     class="w-50 px-4 py-2 rounded-md bg-linear-to-r from-yellow-100 to-neutral-100 font-medium hover:bg-amber-500 hover:text-neutral-900 transition cursor-pointer">Change
@@ -132,6 +124,8 @@
         {% include 'profile/partials/my_interests.html' %}
         {% elif sub_route == 'liked_articles' %}
         {% include 'profile/partials/liked_articles.html' %}
+        {% elif sub_route == 'change_password' %}
+        {% include 'profile/partials/change_password.html' %}
         {% endif %}
     </div>
 </div>

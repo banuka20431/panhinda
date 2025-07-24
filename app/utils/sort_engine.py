@@ -218,7 +218,10 @@ class Search:
     def fetch_articles(self) -> list[Article]:
         ret = []
         for article in db.session.scalars(select(Article)).all():
-            if article.author.id == current_user.id:
+            if current_user.is_authenticated:
+                if article.author.id != current_user.id:
+                    ret.append(article)
+            else:
                 ret.append(article)
         return ret
 

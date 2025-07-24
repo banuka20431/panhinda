@@ -7,51 +7,13 @@ from wtforms.validators import email
 from app.utils.validator.custom_validators import *
 
 
-class UserVerificationForm(FlaskForm):
-    pass
-
-
-class LoginForm(FlaskForm):
-    username = StringField(
-        "Username", validators=[DataRequired(), Length(max=32), CheckUsername()]
-    )
-    password = PasswordField("Password", validators=[InputRequired(), Length(max=64)])
-    remember_me = BooleanField("Remember Me")
-    submit = SubmitField("Continue")
-
-
-class LoginVerificationForm(FlaskForm):
-    otp = StringField(
-        "Enter 6 Digit OTP Sent to your Email",
-        validators=[
-            Regexp(r'[0-9]{6}', message='Invalid Code')
-        ],
-    )
-    submit = SubmitField("Authenticate")
-
-
-class ResetPasswordForm(FlaskForm):
-
-    password = PasswordField(
-        "Password", validators=[DataRequired(message="Cannot be Empty"), Password()]
-    )
-
-    verify_password = PasswordField(
-        "Retype Password",
-        validators=[
-            DataRequired(message="Cannot be Empty"),
-            EqualTo("password", message="Password Verification Failed"),
-        ],
-    )
-
-    submit = SubmitField("Reset Password")
-
-
-class RegisterationUserDetailsForm(FlaskForm):
+class RegisterationUserDetailsForm(
+    FlaskForm
+):  # Handles basic user details when registering
     first_name = StringField(
         "First Name",
         validators=[
-            DataRequired(message="Cannot be Empty"),
+            DataRequired(message="First Name Cannot be Empty"),
             Regexp(r"^([a-zA-Z]+\s?){1,}$", message="Invalid First Name"),
         ],
     )
@@ -59,7 +21,7 @@ class RegisterationUserDetailsForm(FlaskForm):
     last_name = StringField(
         "Last Name",
         validators=[
-            DataRequired(message="Cannot be Empty"),
+            DataRequired(message="Last Name Cannot be Empty"),
             Regexp(r"^([a-zA-Z]+\s?){1,}$", message="Invalid Second Name"),
         ],
     )
@@ -69,31 +31,34 @@ class RegisterationUserDetailsForm(FlaskForm):
     )
 
     gender = RadioField(
-        "Gender", choices=["Male", "Female"], validators=[InputRequired()]
+        "Gender",
+        choices=["Male", "Female"],
+        validators=[InputRequired(message="Please Choose a Gender")],
     )
 
     email = EmailField(
         "Email",
-        validators=[email(message="Invalid Email"), DataRequired()],
-        
+        validators=[
+            email(message="Invalid Email"),
+            DataRequired(message="Email Cannot be Empty"),
+        ],
     )
 
     phone_number = StringField(
         "Phone Number",
         validators=[
-            DataRequired(message="Cannot be Empty"),
-            Regexp(r"^(\+94|0)[0-9]{9}$"),
+            DataRequired(message="Phone Number Cannot be Empty"),
+            Regexp(r"^(\+94|0)[0-9]{9}$", message="Invalid Phone Number"),
             PhoneNumber(action="VALIDATE"),
         ],
     )
 
     submit = SubmitField("Next")
 
-class EmailConfirmationResendForm(FlaskForm):
-    pass
 
-
-class RegistretionUserCredentialsForm(FlaskForm):
+class RegistretionUserCredentialsForm(
+    FlaskForm
+):  # Handles user credentials when registering
 
     username = StringField(
         "Username",
@@ -113,3 +78,101 @@ class RegistretionUserCredentialsForm(FlaskForm):
     )
 
     submit = SubmitField("Register")
+
+
+class EmailConfirmationResendForm(
+    FlaskForm
+):  # Handles resending email confirmation link
+    username = StringField(
+        "Username",
+        validators=[DataRequired(message="Cannot be Empty"), CheckUsername()],
+    )
+
+    email = EmailField(
+        "Email",
+        validators=[
+            email(message="Invalid Email"),
+            DataRequired(message="Email Cannot be Empty"),
+        ],
+    )
+
+    submit = SubmitField("Send")
+
+
+class LoginForm(FlaskForm):  # Handles user login
+    username = StringField(
+        "Username",
+        validators=[
+            DataRequired(message="Username Cannot be Empty"),
+            Length(max=32),
+            CheckUsername(),
+        ],
+    )
+    password = PasswordField(
+        "Password",
+        validators=[
+            InputRequired(message="Enter Password"),
+            Length(max=64, message="Password Maximum Character Length Exceeded"),
+        ],
+    )
+    remember_me = BooleanField("Remember Me")
+    submit = SubmitField("Continue")
+
+
+class LoginVerificationForm(FlaskForm):  # Handles user verification when login
+    otp = StringField(
+        "Enter 6 Digit OTP Sent to your Email",
+        validators=[Regexp(r"[0-9]{6}", message="Invalid Code")],
+    )
+    submit = SubmitField("Authenticate")
+
+
+class ResetPasswordForm(
+    FlaskForm
+):  # Handles password resetting when user isn't logged in
+
+    email = EmailField(
+        "Email",
+        validators=[
+            email(message="Invalid Email"),
+            DataRequired(message="Email Cannot be Empty"),
+        ],
+    )
+
+    password = PasswordField(
+        "New Password", validators=[DataRequired(message="Cannot be Empty"), Password()]
+    )
+
+    verify_password = PasswordField(
+        "Retype Password",
+        validators=[
+            DataRequired(message="Cannot be Empty"),
+            EqualTo("password", message="Password Verification Failed"),
+        ],
+    )
+
+    submit = SubmitField("Verify Details")
+
+
+class PasswordResetUserVerificationForm(LoginVerificationForm): 
+    pass  # Handles user verification while password resetting when user isn't logged in
+
+
+class LogonResetPasswordForm(
+    FlaskForm
+):  # Handles password resetting when user is logged in
+
+    password = PasswordField(
+        "Password",
+        validators=[DataRequired(message="Password Cannot be Empty"), Password()],
+    )
+
+    verify_password = PasswordField(
+        "Retype your password",
+        validators=[
+            DataRequired(message="Password Verification Failed"),
+            EqualTo("password", message="Password Verification Failed"),
+        ],
+    )
+
+    submit = SubmitField("Reset Password")
