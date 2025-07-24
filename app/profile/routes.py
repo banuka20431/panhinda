@@ -13,6 +13,22 @@ from app.utils.func import flash_errors
 
 from app.utils.validator.auth_forms import LogonResetPasswordForm
 
+@bp.route("/<int:author_id>", methods=["GET"])
+@login_required
+def view_author_profile(author_id):
+    u = db.session.get(User, author_id)
+    articles_wrote = len(u.articles)
+    likes_gained = sum([len(article.likes) for article in u.articles])
+    if request.method == "GET":
+        return render_template(
+            "profile/author_profile.html", 
+            author = u,
+            articles_wrote = articles_wrote,
+            likes_gained = likes_gained
+        )
+
+
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -22,6 +38,7 @@ def view_profile():
         return render_template(
             "profile/index.html", sub_route="personal_info", form=form
         )
+
 
 
 @bp.route("/personal-info", methods=["GET", "POST"])

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+{% include 'partials/navbar.html' %}
+
+{% include 'partials/flash_messages.html' %}
+
+{% include 'partials/background_texture_2.html' %}
+
+
+<div class="md:gap-10 p-8 flex flex-col md:flex-row md:mt-10 md:justify-center">
+
+    <div
+        class="flex flex-col md:flex-row gap-3 md:gap-7 md:items-center bg-linear-to-br from-neutral-200 to-yellow-200 rounded-2xl">
+
+
+        <div class="max-w-2xl p-6 -100 gap-5 md:gap-3 flex flex-col self-center">
+
+            <div class="flex flex-col items-center gap-2 ">
+
+                <div class="flex flex-col items-center">
+                    <div>
+                        {% if author.profile_picture_uri is none %}
+                        <img src="{{url_for('static', filename='user_data/profiles/default.png')}}"
+                            alt="profile picture"
+                            class="w-28 h-28 object-cover rounded-full cursor-pointer border-neutral-900 border-3">
+                        {% else %}
+                        <img src="{{ author.profile_picture_uri }}" alt="profile picture"
+                            class="w-28 h-28 object-cover rounded-full cursor-pointer border-neutral-900 border-3 shadow-xl">
+                        {% endif %}
+                    </div>
+
+                </div>
+                <span class="text-sm font-bold font-signika text-neutral-800">@{{author.username}}</span>
+                <a href="#" class="my-2"><span
+                        class="bg-yellow-600 rounded-md font-signika text-sm px-5 py-2 w-[100px]">follow</span></a>
+
+            </div>
+
+            <div class="flex flex-row gap-2 items-center mt-2 ">
+                <div
+                    class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px]">
+                    <span class="text-neutral-800 font-semibold">Articles Wrote</span>
+                    <span
+                        class="text-neutral-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{articles_wrote}}</span>
+                </div>
+                <div
+                    class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px]">
+                    <span class="text-neutral-800 font-semibold">Likes Gained</span>
+                    <span
+                        class="text-neutral-500 text-netural-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{likes_gained
+                        }}</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center h-[500px] mt-7 sm:mt-0">
+        <h2 class="text-neutral-900 text-2xl font-bold mb-4">{{author.first_name}}'s Articles</h2>
+        <div
+            class="space-y-4 overflow-hidden overflow-y-scroll max-h-[450px] max-w-xl w-full px-2 scrollbar-thin scrollbar-thumb-yellow-300 scrollbar-track-neutral-200 rounded-lg">
+            {% for article in author.articles %}
+            <div class="bg-gradient-to-r from-yellow-200 to-neutral-300 rounded-md p-4 flex flex-col shadow-sm">
+                <a href="{{ url_for('articles.view_article', article_id=article.id) }}"
+                    class="text-neutral-800 text-lg font-semibold hover:underline text-left">
+                    {{ article.title }}
+                </a>
+                <div class="flex md:flex-row flex-col gap-2">
+                    <span class="text-neutral-600 text-sm mt-1">
+                        Published on {{article.created | utc_to_local('%b. %d, %Y') }}
+                    </span>
+                    <a href="{{url_for('articles.view_article', article_id=article.id)}}">
+                        <button class="hover:bg-yellow-200  text-xs font-semibold cursor-pointer text-green-400 transition-colors delay-100 border-1 rounded-lg p-1">
+                            Read now&nbsp;
+                            <i class="fa fa-hand"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

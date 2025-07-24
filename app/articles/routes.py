@@ -13,7 +13,7 @@ from app.utils.validator.article_forms import CreateArticleForm
 from app.utils.func import flash_errors
 from app.utils.sort_engine import Search
 
-from random import randint
+from random import randint, choice
 
 
 @bp.route("/", methods=["GET"])
@@ -23,8 +23,10 @@ def view_articles(filtered: tuple[int] | None = None):
         articles_ = db.session.scalars(select(Article)).all()
 
         if current_user.is_authenticated:
-            articles = [article for article in articles_ if article.author.id != current_user.id]
-        
+            articles = [
+                article for article in articles_ if article.author.id != current_user.id
+            ]
+
         else:
 
             articles = articles_
@@ -32,9 +34,12 @@ def view_articles(filtered: tuple[int] | None = None):
         if filtered is None:
 
             return render_template("articles/index.html", articles=articles)
-        
-        flash(f'{len(filtered)} {'article found' if len(filtered) == 1 else 'articles found' }', category='info')
-        
+
+        flash(
+            f"{len(filtered)} {'article found' if len(filtered) == 1 else 'articles found' }",
+            category="info",
+        )
+
         return render_template(
             "articles/index.html", articles=[a for a in articles_ if a.id in filtered]
         )
@@ -49,7 +54,11 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
 
         if current_user.is_authenticated:
 
-            liked_before = db.session.scalar(select(Like).where(and_(Like.user_id==current_user.id, Like.article_id==article_id)))
+            liked_before = db.session.scalar(
+                select(Like).where(
+                    and_(Like.user_id == current_user.id, Like.article_id == article_id)
+                )
+            )
 
         article = db.session.get(Article, article_id)
 
@@ -70,23 +79,37 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
             last_idx = 0
             for start, end in search_matches:
                 highlighted_body += body[last_idx:start]
-                highlighted_body += "<span style='background-color: rgba(0,255,222,.5);'>" + body[start:end] + "</span>"
+                highlighted_body += (
+                    "<span style='background-color: rgba(0,255,222,.5);'>"
+                    + body[start:end]
+                    + "</span>"
+                )
                 last_idx = end
             highlighted_body += body[last_idx:]
             article.body = highlighted_body
 
-            flash(f'{len(search_matches)} {'match found' if len(search_matches) == 1 else 'matches found' }', category='info')
-            
+            flash(
+                f"{len(search_matches)} {'match found' if len(search_matches) == 1 else 'matches found' }",
+                category="info",
+            )
 
         return render_template(
-            "articles/read.html", article=article, comment_to_edit=comment_to_edit, liked_before=liked_before
+            "articles/read.html",
+            article=article,
+            comment_to_edit=comment_to_edit,
+            liked_before=liked_before,
         )
-    
+
+
 @bp.route("/rand", methods=["GET"])
 def view_suggested_article():
-    if request.method == 'GET':
-        suggested_id = randint(1, db.session.scalars(select(Article)).all()[-1].id)
-        return redirect(url_for('articles.view_article', article_id=suggested_id))
+    if request.method == "GET":
+        return redirect(
+            url_for(
+                "articles.view_article",
+                article_id=choice(db.session.scalars(select(Article.id)).all())
+            )
+        )
 
 
 @bp.route("/create", methods=["GET", "POST"])
@@ -125,19 +148,19 @@ def view_create_article():
 @bp.route("/delete/<int:article_id>", methods=["GET", "POST"])
 @login_required
 def view_delete_article(article_id):
-    db.session.execute(delete(Article).where(Article.id==article_id))
+    db.session.execute(delete(Article).where(Article.id == article_id))
     db.session.commit()
-    return redirect(url_for('profile.view_profile_my_articles'))
+    return redirect(url_for("profile.view_profile_my_articles"))
 
 
 @bp.route("/edit/<int:article_id>", methods=["GET", "POST"])
 @login_required
 def view_edit_article(article_id):
-    
-    if request.method == 'GET':
+
+    if request.method == "GET":
         db.session.execute(delete(Article).where(id=article_id))
-    
-    return redirect(url_for('profile.view_profile_my_articles'))
+
+    return redirect(url_for("profile.view_profile_my_articles"))
 
 
 @bp.route("/<int:article_id>/react", methods=["POST"])
@@ -203,7 +226,7 @@ def comment(article_id=None):
 
                 if comment.user.id == int(current_user.id) and comment.body != body:
 
-                    comment.body = body 
+                    comment.body = body
                     comment.edited = datetime.now(timezone.utc)
 
                     db.session.commit()
