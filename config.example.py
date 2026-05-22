@@ -31,3 +31,5 @@ class Config:
     USER_DATA_PATH = os.environ.get(
         "USER_DATA_PATH", os.path.join(basedir, "static", "user_data")
     )
+
+    APP_URL = os.environ.get("APP_URL", "your-website-url")
