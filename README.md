@@ -73,7 +73,29 @@ git clone https://github.com/banuka20431/panhinda
 cd panhinda
 ```
 
-### 2. Create `config.py`
+### 2. Create and Activate a Virtual Environment
+
+On Windows:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+On macOS/Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Python Requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Create `config.py`
 
 Create a file named `config.py` in the root directory with the following content:
 
@@ -108,7 +130,7 @@ class Config:
 
 > Replace sensitive values (like `MAIL_USERNAME`, `MAIL_PASSWORD`, and `SECRET_KEY`) before deploying.
 
-### 3. Initialize and Migrate the Database
+### 5. Initialize and Migrate the Database
 
 ```bash
 flask db init
@@ -116,14 +138,14 @@ flask db migrate
 flask db upgrade
 ```
 
-### 4. Install Frontend Dependencies
+### 6. Install Frontend Dependencies
 
 ```bash
 npm install
 npm run watch
 ```
 
-### 5. Run the Application
+### 7. Run the Application
 
 ```bash
 flask run --debug
