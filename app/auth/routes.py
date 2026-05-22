@@ -43,7 +43,7 @@ def send_email_confirmation(user: User):
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
         user_name=user.first_name,
-        link=f"https://clnhr9pt-5000.asse.devtunnels.ms/{url_for("auth.verify_email", token=token)}",
+        link=f"http://127.0.0.1:5000/{url_for("auth.verify_email", token=token)}",
         current_year=datetime.now(timezone.utc).year,
     )
 
