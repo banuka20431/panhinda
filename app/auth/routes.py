@@ -124,7 +124,7 @@ def login():
 
         if not email_verified:
             flash('Please verify your email before login', category='error')
-            flash(f'<a href="{url_for('auth.resend_email_confirmation')}" class="underline underline-offset-2">Need to get the confimation again ?</a>', 'error')
+            flash(f'<a href="{url_for("auth.resend_email_confirmation")}" class="underline underline-offset-2">Need to get the confirmation again ?</a>', 'error')
             return redirect(url_for('auth.login'))
         
         session['login_user'] = user
@@ -164,7 +164,7 @@ def login_user_verification():
     
     if not form.validate_on_submit():
         if session_get_or_404('auth_attempts') != 3 :
-            flash(f'You have   {3 - session['auth_attempts']  } tries left', category='error')
+            flash(f"You have {3 - session['auth_attempts']} tries left", category='error')
         flash_errors(form)
         return redirect(url_for('auth.login_user_verification'))
 
@@ -180,7 +180,8 @@ def login_user_verification():
                 flash("OTP Incorrect!", category='error')
 
         if session_get_or_404('auth_attempts') != 3 :
-            flash(f'You have   {3 - session['auth_attempts']  } tries left', category='error')
+            # FIX: Swapped outer string to double quotes to avoid colliding with session['auth_attempts']
+            flash(f"You have {3 - session['auth_attempts']} tries left", category='error')
         return redirect(url_for('auth.login_user_verification'))
         
     else:
@@ -363,7 +364,9 @@ def verify_email(token):
         if email := User.verify_email_token(token):
             user = db.session.scalar(select(User).where(User.email==email))
             user.verified = True
-            user.email == get_sha256_hash(email)
+            
+            user.email = get_sha256_hash(email)
+            
             db.session.commit()
 
             confirmed = True
