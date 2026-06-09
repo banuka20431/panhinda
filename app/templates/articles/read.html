@@ -18,7 +18,7 @@
 
         <div class="flex flex-row gap-3 ml-2.5">
 
-            <a href="{{ url_for('profile.view_profile') }}">
+            <a href="{{ url_for('profile.view_author_profile', author_id=article.author.id) }}">
                 {% if article.author.profile_picture_uri is none %}
                 <img src="{{url_for('static', filename='user_data/profiles/default.png')}}" alt="profile picture"
                     class="w-12 h-12 object-cover rounded-4xl cursor-pointer border-neutral-900 border-3">

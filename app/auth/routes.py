@@ -279,7 +279,7 @@ def register_user_details():
     form = RegisterationUserDetailsForm()
 
     if request.method == "GET":
-        return render_template("auth/register/user-details.html", form=form)
+        return render_template("auth/register/user-details.html", form=form, **form.data)
 
     if form.validate_on_submit():
 

@@ -65,6 +65,7 @@ def index():
                 likes_gained += len(article.comments)
 
         return render_template("index.html", articles_wrote_count=articles_wrote_count, likes_gained=likes_gained)
+    
     else:
         # This branch is redundant since only GET is allowed, but included for completeness
         return "Method not allowed"

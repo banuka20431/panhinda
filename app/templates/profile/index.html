@@ -9,14 +9,14 @@
 {% include 'partials/background_texture_2.html' %}
 
 
-<div class="md:gap-10 p-8 flex flex-col md:flex-row md:mt-10 md:justify-center">
+<div class="md:gap-10 p-8 flex flex-col md:flex-row md:mt-10 w-[70%] mx-auto items-center md:items-start">
 
-    <div class="flex flex-col md:flex-row gap-3 md:gap-7 md:items-center ">
+    <div class="flex flex-col md:flex-row gap-3 md:gap-7  w-[50%] items-center md:items-start">
 
 
-        <div class="max-w-2xl p-6 -100 gap-5 md:gap-3 flex flex-col self-center">
+        <div class="max-w-2xl p-6 gap-5 md:gap-3 flex md:flex-col">
 
-            <div class="flex flex-col items-center gap-2 ">
+            <div class="flex flex-col items-center gap-2">
 
                 <form action="{{ url_for('profile.update_profile_picture') }}" method="post"
                     enctype="multipart/form-data" class="flex flex-col items-center">
@@ -42,15 +42,15 @@
 
             </div>
 
-            <div class="flex flex-row gap-2 items-center mt-2 ">
+            <div class="flex flex-col justify-center md:justify-center md:flex-row gap-2 mt-2">
                 <div
-                    class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px]">
+                    class="flex md:flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[200px] text-xs text-center">
                     <span class="text-neutral-800 font-semibold">Articles Wrote</span>
                     <span class="text-neutral-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{
                         session['articles_wrote_count'] }}</span>
                 </div>
                 <div
-                    class="flex flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[180px] w-max-[300px]">
+                    class="flex md:flex-col items-center gap-2 shadow-md bg-amber-200 rounded-lg p-4 w-min-[200px] text-xs text-center">
                     <span class="text-neutral-800 font-semibold">Likes Gained</span>
                     <span class="text-neutral-500 text-netural-500 text-xl font-bold bg-yellow-100 px-3 py-1 rounded-md">{{
                         session['likes_gained'] }}</span>
@@ -115,7 +115,7 @@
 
     </div>
 
-    <div class="flex flex-col mt-10 md:ml-3 text-center md:mt-0 md:text-left items-center">
+    <div class="flex flex-col mt-10 md:ml-3 text-center md:mt-0 md:text-left items-center w-[50%] h-full">
         {% if sub_route == 'personal_info' %}
         {% include 'profile/partials/personal_info.html' %}
         {% elif sub_route == 'my_articles' %}
