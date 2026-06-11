@@ -32,7 +32,7 @@ class RegisterationUserDetailsForm(
 
     gender = RadioField(
         "Gender",
-        choices=["Male", "Female"],
+        choices=["Male", "Female"], # type: ignore
         validators=[InputRequired(message="Please Choose a Gender")],
     )
 
