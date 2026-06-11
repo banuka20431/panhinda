@@ -252,6 +252,7 @@ class Search:
     def get_matches(self) -> list[tuple[int, int]]:
         self.article =  db.session.scalar(select(Article).where(Article.id==int(self.article_id)))
         
+        #generating regex
         pattern = '('
         for word in self.kw:
             pattern += f'{word}'

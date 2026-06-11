@@ -26,7 +26,7 @@ from app.utils.func import get_sha256_hash, flash_errors, remove_url_suffix, ses
 from app.utils.errors import InternalServerError
 
 
-def send_email_confirmation(user: User):
+def send_email_confirmation(user: User) -> bool:
 
     token = user.get_email_verification_token()
 
@@ -43,7 +43,7 @@ def send_email_confirmation(user: User):
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
         user_name=user.first_name,
-        link=f"https://clnhr9pt-5000.asse.devtunnels.ms/{url_for("auth.verify_email", token=token)}",
+        link=f"{app.config.get('APP_URL')}{url_for('auth.verify_email', token=token)}",
         current_year=datetime.now(timezone.utc).year,
     )
 
@@ -110,11 +110,11 @@ def login():
         session['remember_me'] = form.remember_me.data
         session['next'] = request.args.get('next')
 
-        user: User = db.session.scalar(
+        user: User | None = db.session.scalar(
             select(User).where(User.username == form.username.data)
         )
 
-        if not user.check_password(form.password.data):
+        if  not user or (not user.check_password(form.password.data)):
             flash("User Couldn't be Authorized", category='error')
             session["attampted_user"] = form.username.data
             flash_errors(form)
@@ -124,7 +124,7 @@ def login():
 
         if not email_verified:
             flash('Please verify your email before login', category='error')
-            flash(f'<a href="{url_for('auth.resend_email_confirmation')}" class="underline underline-offset-2">Need to get the confimation again ?</a>', 'error')
+            flash(f'<a href="{url_for("auth.resend_email_confirmation")}" class="underline underline-offset-2">Need to get the confirmation again ?</a>', 'error')
             return redirect(url_for('auth.login'))
         
         session['login_user'] = user
@@ -164,14 +164,14 @@ def login_user_verification():
     
     if not form.validate_on_submit():
         if session_get_or_404('auth_attempts') != 3 :
-            flash(f'You have   {3 - session['auth_attempts']  } tries left', category='error')
+            flash(f"You have {3 - session['auth_attempts']} tries left", category='error')
         flash_errors(form)
         return redirect(url_for('auth.login_user_verification'))
 
-    state, flag = user.verify_otp(form.otp.data) 
+    
+    state, flag = user.verify_otp(form.otp.data or "") 
 
     if not state:
-
         match flag:
             case User.TIME_OUT:
                 flash("Authentication Failed!  OTP Expired", category='error')
@@ -180,7 +180,8 @@ def login_user_verification():
                 flash("OTP Incorrect!", category='error')
 
         if session_get_or_404('auth_attempts') != 3 :
-            flash(f'You have   {3 - session['auth_attempts']  } tries left', category='error')
+            flash(f"You have {3 - session['auth_attempts']} tries left", category='error')
+            
         return redirect(url_for('auth.login_user_verification'))
         
     else:
@@ -279,7 +280,7 @@ def register_user_details():
     form = RegisterationUserDetailsForm()
 
     if request.method == "GET":
-        return render_template("auth/register/user-details.html", form=form)
+        return render_template("auth/register/user-details.html", form=form, **form.data)
 
     if form.validate_on_submit():
 
@@ -363,7 +364,9 @@ def verify_email(token):
         if email := User.verify_email_token(token):
             user = db.session.scalar(select(User).where(User.email==email))
             user.verified = True
-            user.email == get_sha256_hash(email)
+            
+            user.email = get_sha256_hash(email)
+            
             db.session.commit()
 
             confirmed = True

@@ -14,7 +14,6 @@ from app.utils.func import flash_errors
 from app.utils.validator.auth_forms import LogonResetPasswordForm
 
 @bp.route("/<int:author_id>", methods=["GET"])
-@login_required
 def view_author_profile(author_id):
     u = db.session.get(User, author_id)
     articles_wrote = len(u.articles)

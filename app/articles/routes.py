@@ -104,12 +104,15 @@ def view_article(article_id: int, search_matches: list[tuple[int, int]] | None =
 @bp.route("/rand", methods=["GET"])
 def view_suggested_article():
     if request.method == "GET":
-        return redirect(
-            url_for(
-                "articles.view_article",
-                article_id=choice(db.session.scalars(select(Article.id)).all())
-            )
+        articals = db.session.scalars(select(Article)).all()
+        suggested_id = (
+            randint(1, articals[len(articals) - 1].id) if len(articals) > 0 else -1
         )
+
+        if suggested_id == -1:
+            return redirect(url_for("articles.view_articles"))
+
+        return redirect(url_for("articles.view_article", article_id=suggested_id))
 
 
 @bp.route("/create", methods=["GET", "POST"])

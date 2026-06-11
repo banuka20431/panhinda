@@ -5,12 +5,19 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+from .logging_config import init_logging
+import logging
+
 
 # Initialize the Flask application
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 
 # Load configuration from Config object
 app.config.from_object(Config)
+
+# initialize logger
+init_logging()
+logger = logging.getLogger("panhinda_logger")
 
 # Initialize extensions
 db: SQLAlchemy = SQLAlchemy(app)          # Database ORM
@@ -20,7 +27,9 @@ Session(app)                              # Server-side sessions
 mail = Mail(app)                          # Email support
 
 # Configure login manager
-login_manager.login_view = 'auth.login'   # Redirect to login page if not logged in
+
+# Redirect to login page if not logged in
+login_manager.login_view = "auth.login"  # type: ignore
 login_manager.login_message = 'Login Required'  # Message for login required
 
 # Import routes and models to register them with the app
@@ -42,3 +51,5 @@ app.register_blueprint(profile.bp)
 # Register custom Jinja filter
 from app.utils.func import utc_to_local
 app.jinja_env.filters['utc_to_local'] = utc_to_local
+
+logger.info("Application initialized successfully")
