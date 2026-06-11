@@ -35,6 +35,7 @@ def send_email_confirmation(user: User) -> bool:
 
     SUBJECT = "Sending confirmation link"
 
+
     mail_conf_mail = Message(
         SUBJECT, sender=app.config.get("MAIL_USERNAME"), recipients=[user.email]
     )
@@ -377,15 +378,11 @@ def verify_email(token):
     confirmed = False
 
     if token:
-
         if email := User.verify_email_token(token):
             user = db.session.scalar(select(User).where(User.email==email))
-            user.verified = True
-            
-            user.email = get_sha256_hash(email)
-            
-            db.session.commit()
-
-            confirmed = True
+            if user:
+                user.verified = True
+                db.session.commit()
+                confirmed = True
 
     return render_template("auth/emails/sent_email_state.html", confirmed=confirmed)
