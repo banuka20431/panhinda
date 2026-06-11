@@ -26,7 +26,6 @@ LOGGING_CONFIG = {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "standard",
             "filename": os.path.join(LOG_DIR, "app.log"),
-            "mode": "a",
             "maxBytes": 10485760,  # 10MB
             "backupCount": 5,
         },

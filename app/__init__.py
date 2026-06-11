@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from .logging_config import init_logging
+import logging
+
 
 # Initialize the Flask application
 app: Flask = Flask(__name__)
@@ -15,6 +17,7 @@ app.config.from_object(Config)
 
 # initialize logger
 init_logging()
+logger = logging.getLogger("panhinda_logger")
 
 # Initialize extensions
 db: SQLAlchemy = SQLAlchemy(app)          # Database ORM
@@ -48,3 +51,5 @@ app.register_blueprint(profile.bp)
 # Register custom Jinja filter
 from app.utils.func import utc_to_local
 app.jinja_env.filters['utc_to_local'] = utc_to_local
+
+logger.info("Application initialized successfully")
