@@ -32,4 +32,6 @@ class Config:
         "USER_DATA_PATH", os.path.join(basedir, "static", "user_data")
     )
 
+    LOG_DIR = os.environ.get("LOG_DIR", os.path.join(basedir, "logs"))
+
     APP_URL = os.environ.get("APP_URL", "your-website-url")
