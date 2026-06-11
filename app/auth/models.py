@@ -103,7 +103,7 @@ class User(UserMixin, db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.date_of_birth = dob
-        self.gender = gender
+        self.gender = GenderEnum.M if gender.lower() == 'male' else GenderEnum.F   
         self.email = email
         self.phone_number = phone_number
         self.phone_number_last_digits = phone_number_last_digits

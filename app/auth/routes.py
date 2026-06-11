@@ -1,7 +1,7 @@
 from app import app, db, mail
 from flask import request, render_template, redirect, flash, url_for, session, abort
 from flask_login import current_user, login_user
-from app.auth.models import User
+from app.auth.models import GenderEnum, User
 from app.auth import bp
 
 from sqlalchemy import select, update
@@ -24,6 +24,9 @@ from app.utils.validator import (
 )
 from app.utils.func import get_sha256_hash, flash_errors, remove_url_suffix, session_get_or_404
 from app.utils.errors import InternalServerError
+import logging
+
+logger = logging.getLogger("panhinda_logger")
 
 
 def send_email_confirmation(user: User) -> bool:
@@ -40,16 +43,21 @@ def send_email_confirmation(user: User) -> bool:
 
     db.session.commit()    
 
+    __link = f"{app.config.get('APP_URL')}{url_for('auth.verify_email', token=token)}"
+
     mail_conf_mail.html = render_template(
         "auth/emails/conf_email.html",
         user_name=user.first_name,
-        link=f"{app.config.get('APP_URL')}{url_for('auth.verify_email', token=token)}",
+        link=__link,
         current_year=datetime.now(timezone.utc).year,
     )
 
     try:
         mail.send(mail_conf_mail)
-    except:
+        logger.info("auth/routes/send_email_confirmation: sending email containing the link > " + __link)
+    except Exception as e:
+        logger.error("auth/routes/send_email_confirmation: sending email containing the link > " + __link + " failed")
+        logger.debug(e)
         return False
     
     return True
@@ -69,20 +77,27 @@ def resend_email_confirmation():
    
         if db.session.scalar(select(User.verified).where(User.username == form.username.data)):
 
-            flash("That Email has already been verified")
+            flash("Requested email has already been verified")
 
         else:   
-            id, email = db.session.execute(select(User.id, User.email).where(User.username == form.username.data)).first()
+            id, email = db.session.execute(select(User.id, User.email).where(User.username == form.username.data)).first() or [-1, None]
             
-            if not form.email.data == email:
-                flash("Sorry! Couldn't Verify the Email", category='error')
+            if  email == None or not form.email.data == email:
+                logger.info(f"auth/login/resend_email_confirmation: failed email verification for email: {email} of user id: {id}")
+                flash("Sorry! We cannot verify requested email", category='error')
                 return render_template('auth/login/resend_email_confirmation.html', form=form, **form.data)
 
             user = db.session.get(User, id)
 
+            if not user or (not user.email_conf_exp):
+                logger.debug("auth/routes/resend_confirmation: user or user.email_conf_exp was None")
+                abort(500)
+
             if timedelta(minutes=5) < (datetime.now(timezone.utc) - user.email_conf_exp.astimezone(timezone.utc)):
                 send_email_confirmation(user)
-                flash("Senḍ email confirmation successfully", category='info')
+                msg = "Senḍ email confirmation successfully"
+                logger.info(f"auth/routes/resend_confirmation: " + msg + f" to {email} of user id:{id}")
+                flash(msg, category='info')
             else:
                 flash("A confirmation email has already been sent to your address")
 
@@ -108,7 +123,7 @@ def login():
     if form.validate_on_submit():
 
         session['remember_me'] = form.remember_me.data
-        session['next'] = request.args.get('next')
+        session['next'] = request.args.get('next') # where user needed to be redirected after logging
 
         user: User | None = db.session.scalar(
             select(User).where(User.username == form.username.data)
@@ -284,14 +299,16 @@ def register_user_details():
 
     if form.validate_on_submit():
 
+        __phone_number_last_digits = form.phone_number.data[-1:-4] if form.phone_number.data else "111"
+
         new_user = User(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            dob=form.dob.data,
-            gender="M" if form.gender.data == "Male" else "F",
-            email=form.email.data,
-            phone_number=get_sha256_hash(form.phone_number.data),
-            phone_number_last_digits=form.phone_number.data[-1:-4],
+            first_name=form.first_name.data or ("John" if form.gender.data.lower() == "male" else "Jane"),
+            last_name=form.last_name.data or "Doe",
+            dob=form.dob.data or datetime.now() - timedelta(5 * 365),
+            gender=form.gender.data,
+            email=form.email.data or "",
+            phone_number=get_sha256_hash(form.phone_number.data or "default"),
+            phone_number_last_digits=__phone_number_last_digits,
         )
 
         session["new_user"] = new_user
@@ -322,8 +339,8 @@ def register_user_credentials():
 
         if new_user:
 
-            new_user.username = form.username.data
-            new_user.set_password(form.password.data)
+            new_user.username = form.username.data or ("John" if new_user.gender == GenderEnum.M else "Jane")
+            new_user.set_password(form.password.data or "default")
             
             if send_email_confirmation(new_user):
                 flash("Email Confirmation link sent Successfully. Please check your emails!", category='success')
