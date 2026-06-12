@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm # type: ignore
 from wtforms import StringField, PasswordField, RadioField
 from wtforms import EmailField, BooleanField, SubmitField, DateField
 from wtforms.validators import Length, EqualTo, DataRequired, InputRequired, Regexp
@@ -56,7 +56,7 @@ class RegisterationUserDetailsForm(
     submit = SubmitField("Next")
 
 
-class RegistretionUserCredentialsForm(
+class RegistretionUserCredentialsForm (
     FlaskForm
 ):  # Handles user credentials when registering
 

@@ -1,13 +1,11 @@
-from flask import Flask
-from config import Config, basedir
-from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_mail import Mail
-from .logging_config import init_logging
-import logging
+from typing import Any, cast
 
+from flask import Flask
+from flask_migrate import Migrate
+
+from config import Config
+from flask_session import Session  # type: ignore
+from app.extensions import mail, logger, login_manager, db
 
 # Initialize the Flask application
 app: Flask = Flask(__name__)
@@ -15,41 +13,34 @@ app: Flask = Flask(__name__)
 # Load configuration from Config object
 app.config.from_object(Config)
 
-# initialize logger
-init_logging()
-logger = logging.getLogger("panhinda_logger")
-
 # Initialize extensions
-db: SQLAlchemy = SQLAlchemy(app)          # Database ORM
-migrate = Migrate(app, db)                # Database migrations
-login_manager = LoginManager(app)         # User session management
-Session(app)                              # Server-side sessions
-mail = Mail(app)                          # Email support
+db.init_app(app)
+login_manager.init_app(app)  # type: ignore
+mail.init_app(app)
+migrate = Migrate(app, db)
+Session(app)  # Server-side sessions
 
 # Configure login manager
-
-# Redirect to login page if not logged in
-login_manager.login_view = "auth.login"  # type: ignore
-login_manager.login_message = 'Login Required'  # Message for login required
-
-# Import routes and models to register them with the app
-from app import routes
-from app.auth import routes
-from app.articles import routes
-from app.profile import routes
-from app.auth.models import *
-from app.articles.models import *
+login_manager.login_view = cast(Any, "auth.login")
+login_manager.login_message = "Login Required"
+login_manager.login_message_category = "info"
 
 # Import blueprints
 from app import auth, articles, profile
 
+from app import routes  # pyright: ignore[reportUnusedImport]
+from app.articles import routes  # pyright: ignore[reportUnusedImport]
+from app.auth import routes  # pyright: ignore[reportUnusedImport]
+from app.profile import routes  # pyright: ignore[reportUnusedImport]
+
 # Register blueprints
-app.register_blueprint(auth.bp)
-app.register_blueprint(articles.bp)
-app.register_blueprint(profile.bp)
+app.register_blueprint(auth.bp)  # type: ignore
+app.register_blueprint(articles.bp)  # type: ignore
+app.register_blueprint(profile.bp)  # type: ignore
 
 # Register custom Jinja filter
 from app.utils.func import utc_to_local
-app.jinja_env.filters['utc_to_local'] = utc_to_local
+
+app.jinja_env.filters["utc_to_local"] = utc_to_local  # type: ignore
 
 logger.info("Application initialized successfully")

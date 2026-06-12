@@ -1,13 +1,13 @@
 from datetime import date, datetime, timezone, timedelta
-from typing import Optional
+from typing import Any, Optional
 from random import randint
 from enum import Enum as Enum_
-from flask_login import UserMixin
-from sqlalchemy import String, ForeignKey, Enum, select
+from flask_login import UserMixin #type: ignore
+from sqlalchemy import String, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash #type: ignore
 from flask_mail import Message
-from flask import render_template, current_app
+from flask import render_template
 
 from app import db, app
 from app import login_manager
@@ -17,8 +17,8 @@ from app.utils.func import get_sha256_hash
 from itsdangerous import URLSafeTimedSerializer as Serializer
 
 
-@login_manager.user_loader
-def load_user(id):
+@login_manager.user_loader #type: ignore
+def load_user(id: str):
     return db.session.get(User, int(id))
 
 
@@ -109,7 +109,7 @@ class User(UserMixin, db.Model):
         self.phone_number_last_digits = phone_number_last_digits
         self.profile_picture_uri = profile_picture_uri
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "first_name": self.first_name,
@@ -123,14 +123,14 @@ class User(UserMixin, db.Model):
         }
 
     def get_email_verification_token(self):
-        s = Serializer(app.config.get("SECRET_KEY"))
+        s = Serializer(app.config.get("SECRET_KEY", "1234"))
         return s.dumps(self.email, salt="confmai1")
 
     @staticmethod
-    def verify_email_token(token) -> str | None:
+    def verify_email_token(token: str) -> str | None:
         
         EXPIRATION_TIME=600
-        serializer = Serializer(app.config.get("SECRET_KEY"))
+        serializer = Serializer(app.config.get("SECRET_KEY", "1234"))
 
         try:
             email = serializer.loads(token, salt="confmai1", max_age=EXPIRATION_TIME)
@@ -138,7 +138,7 @@ class User(UserMixin, db.Model):
             return None
         return email
 
-    def send_otp(self) -> bool:
+    def send_otp(self) -> bool | None:
 
         SUBJECT = "Panhinda User Login - One time Password"
         EXPIRATION_TIME = 600
@@ -163,6 +163,9 @@ class User(UserMixin, db.Model):
         mail.send(auth_otp_mail)
 
     def verify_otp(self, entered_otp: str) -> tuple[bool, int]:
+        if not self.otp_expiration:
+            return False, self.TIME_OUT
+        
         if self.otp_expiration < datetime.now(timezone.utc):
             return False, self.TIME_OUT
         if get_sha256_hash(entered_otp) != self.otp_hash:
@@ -170,10 +173,10 @@ class User(UserMixin, db.Model):
 
         return True, self.MATCHED
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password) # type: ignore
 
-    def set_password(self, password):
+    def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
 
@@ -192,7 +195,7 @@ class UserInterest(db.Model):
     # relationships
 
     user: Mapped["User"] = relationship(back_populates="interests")
-    category: Mapped["Category"] = relationship(back_populates="interested_users")
+    category: Mapped["Category"] = relationship(back_populates="interested_users") # type: ignore
 
     def __init__(self, category_id: int, user_id: int):
         self.category_id = category_id

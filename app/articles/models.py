@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
-from typing import Optional
-from sqlalchemy import ForeignKey, String, update
+from typing import Any, Optional
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app import db
-from app.auth.models import User
+from app.auth.models import User, UserInterest
 
 
 class Article(db.Model):
@@ -52,7 +52,7 @@ class Article(db.Model):
         self.created = datetime.now(timezone.utc)
         self.category_id = category_id
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "author_id": self.author_id,
@@ -89,10 +89,10 @@ class Category(db.Model):
     def __repr__(self):
         return f"<Category '{self.id} - {self.label}'>"
 
-    def __init__(self, label):
+    def __init__(self, label: str):
         self.label = label
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "label": self.label,
@@ -119,14 +119,14 @@ class SubCategory(db.Model):
         back_populates="sub_categories"
     )
 
-    def __repr__(self):
+    def __repr__(self) :
         return f"<Sub Category '{self.id} - {self.label}'>"
 
-    def __init__(self, label: str, category_id: int):
+    def __init__(self, label: str, category_id: str):
         self.label = label
         self.category_id = category_id
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "label": self.label,
@@ -155,11 +155,11 @@ class Like(db.Model):
     user: Mapped["User"] = relationship(back_populates="liked_articles")
     article: Mapped["Article"] = relationship(back_populates="likes")
 
-    def __init__(self, article_id, user_id):
+    def __init__(self, article_id: int, user_id: int):
         self.article_id = article_id
         self.user_id = user_id
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "article_id": self.article_id,
@@ -198,7 +198,7 @@ class Comment(db.Model):
         self.article_id = article_id
         self.user_id = user_id
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "body": self.body,
